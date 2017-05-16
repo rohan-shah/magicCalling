@@ -1,0 +1,20 @@
+Package: magicCalling
+Type: Package
+Title: Genotype calling for multi-parent RILs
+Version: 0.0.1
+Date: 2017-05-15
+Author: Rohan Shah
+Maintainer: Rohan Shah <cran@bookshah.com>
+Description: Tools for calling SNP markers in multi-parent RIL populations (also
+    known as MAGIC populations).
+License: GPL-3
+LazyLoad: yes
+Imports:
+    rjags
+Collate:
+    'fitModel.R'
+    'model.R'
+    'runHeuristics.R'
+    'interactiveCall.R'
+    'plotCalls.R'
+RoxygenNote: 5.0.1
