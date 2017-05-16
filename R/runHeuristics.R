@@ -54,6 +54,6 @@ runHeuristics <- function(fittedModel)
   } 
   else chainIndex <- -1
   result <- list(classifications = classifications, clusterMeans = clusterMeans, covariances = covariances, chainIndex = chainIndex, data = fittedModel$data)
-  class(result) <- "magicHeuristic"
+  class(result) <- "magicHeuristicHBC"
   return(result)
 }
