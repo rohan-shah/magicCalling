@@ -53,5 +53,7 @@ runHeuristics <- function(fittedModel)
     chainIndex <- validIndices[which.min(maxDets)]
   } 
   else chainIndex <- -1
-  return(list(classifications = classifications, clusterMeans = clusterMeans, covariances = covariances, chainIndex = chainIndex))
+  result <- list(classifications = classifications, clusterMeans = clusterMeans, covariances = covariances, chainIndex = chainIndex, data = fittedModel$data)
+  class(result) <- "magicHeuristic"
+  return(result)
 }

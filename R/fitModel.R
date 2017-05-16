@@ -1,4 +1,5 @@
 #' @export
+#' @importFrom rjags jags.model jags.samples
 fitModel <- function(data, startingPoints, n.iter)
 {
   clusterCov <- cbind(c(0.005, 0), c(0, 0.1))
@@ -22,9 +23,11 @@ fitModel <- function(data, startingPoints, n.iter)
   inits <- lapply(1:length(startingPoints), function(x) list(muOfClust = rbind(startingPoints[[x]], c(NA, NA), c(0.5, 1))))
   jags <- jags.model(model.spec,
     data = dataList,
-    n.chains=1,
+    n.chains=length(startingPoints),
     n.adapt=100, inits = inits)
   samples <- jags.samples(jags, variable.names = c("clust", "covInvMatrices", "muOfClust", "pClust"), n.iter = n.iter)
-  return(list(samples = samples, data = data))
+  result <- list(samples = samples, data = data)
+  class(result) <- "magicHBC"
+  return(result)
 }
 
