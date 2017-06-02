@@ -3,7 +3,7 @@
 S3method(plot,magicHBC)
 S3method(plot,magicHeuristicHBC)
 S3method(plot,markerResult)
-export(fitModel)
+export(fitClusterModel)
 export(runHeuristics)
 importFrom(rjags,jags.model)
 importFrom(rjags,jags.samples)

@@ -37,12 +37,14 @@ interactiveCall <- function(originalResult, data, allFounders, startingPoints, n
 		#Keep
 		if(command == "k")
 		{
+			class(result) <- "markerResult"
 			return(result)
 		}
 		#Discard this marker
 		else if(command == "d")
 		{
 			result <- list(hasVariability = FALSE)
+			class(result) <- "markerResult"
 			return(result)
 		}
 		#Back to original

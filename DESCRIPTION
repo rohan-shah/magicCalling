@@ -12,7 +12,7 @@ LazyLoad: yes
 Imports:
     rjags
 Collate:
-    'fitModel.R'
+    'fitClusterModel.R'
     'model.R'
     'runHeuristics.R'
     'interactiveCall.R'
