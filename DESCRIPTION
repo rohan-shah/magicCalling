@@ -10,11 +10,13 @@ Description: Tools for calling SNP markers in multi-parent RIL populations (also
 License: GPL-3
 LazyLoad: yes
 Imports:
-    rjags
+    rjags,
+    dbscan
 Collate:
     'fitClusterModel.R'
     'model.R'
     'runHeuristics.R'
     'interactiveCall.R'
     'plotCalls.R'
+    'roxygen.R'
 RoxygenNote: 5.0.1

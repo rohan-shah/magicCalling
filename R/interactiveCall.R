@@ -1,5 +1,5 @@
 #' @export
-interactiveCall <- function(originalResult, data, allFounders, startingPointFunction, n.iter, dbscanParameters, ...)
+interactiveCall <- function(originalResult, data, markerName, allFounders, startingPointFunction, n.iter, dbscanParameters, ...)
 {
 	if(originalResult$hasVariability)
 	{
