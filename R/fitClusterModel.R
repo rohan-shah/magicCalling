@@ -1,6 +1,6 @@
 #' @export
 #' @importFrom rjags jags.model jags.samples
-fitModel <- function(data, startingPoints, n.iter)
+fitClusterModel <- function(data, startingPoints, n.iter)
 {
   clusterCov <- cbind(c(0.005, 0), c(0, 0.1))
   N <- nrow(data)
