@@ -1,3 +1,4 @@
+#' @export
 interactiveCall <- function(originalResult, data, allFounders, startingPointFunction, n.iter, dbscanParameters, ...)
 {
 	if(originalResult$hasVariability)
@@ -72,7 +73,7 @@ interactiveCall <- function(originalResult, data, allFounders, startingPointFunc
 		{
 			if(previousChain == -1 || previousChain == length(heuristicResults$classifications))
 			{
-				fittedModel <- fitModel(data, startingPoints = startingPointFunction(data), n.iter = n.iter)
+				fittedModel <- fitClusterModel(data, startingPoints = startingPointFunction(data), n.iter = n.iter)
 				heuristicResults <- runHeuristics(fittedModel)
 				previousChain <- 1
 			}
@@ -89,7 +90,7 @@ interactiveCall <- function(originalResult, data, allFounders, startingPointFunc
 		{
 			previousChain <- 6
 			points <- locator(n = 2)
-			fittedModel <- fitModel(data, startingPoints = list(cbind(points$x, points$y)), n.iter = n.iter)
+			fittedModel <- fitClusterModel(data, startingPoints = list(cbind(points$x, points$y)), n.iter = n.iter)
 			heuristicResults <- runHeuristics(fittedModel)
 			plot(data[-founderIndices,1], data[-founderIndices,2], col = heuristicResults$classifications[[1]][-founderIndices], pch = 16, ...)
 			ellipse(center = heuristicResults$clusterMeans[[1]][1, ], shape = heuristicResults$covariances[[1]][1,,], radius=5, col = 2)
