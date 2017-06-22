@@ -7,10 +7,10 @@ model <- "model {
       clust[i] ~ dcat( pClust[1:4] )
     }
     # Prior:
-    covInvMatrices[1,1:2,1:2] ~ dwish(clusterCov*clusterCovConcentration, 3*clusterCovConcentration)
-    covInvMatrices[2,1:2,1:2] ~ dwish(clusterCov*clusterCovConcentration, 3*clusterCovConcentration)
-    covInvMatrices[3,1:2,1:2] ~ dwish(smallClusterCov*smallClusterCovConcentration, 3*smallClusterCovConcentration)
-    covInvMatrices[4,1:2,1:2] ~ dwish(errorCov*errorCovConcentration, 3*errorCovConcentration)
+    covInvMatrices[1,1:2,1:2] ~ dwish(clusterCov*clusterCovConcentration, clusterCovConcentration)
+    covInvMatrices[2,1:2,1:2] ~ dwish(clusterCov*clusterCovConcentration, clusterCovConcentration)
+    covInvMatrices[3,1:2,1:2] ~ dwish(smallClusterCov*smallClusterCovConcentration, smallClusterCovConcentration)
+    covInvMatrices[4,1:2,1:2] ~ dwish(errorCov*errorCovConcentration, errorCovConcentration)
 
     muOfClust[1,1:2] ~ dmnorm(c(0.25, 1), priorMuParam)
     muOfClust[2,1:2] ~ dmnorm(c(0.75, 1), priorMuParam)

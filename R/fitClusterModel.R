@@ -2,7 +2,7 @@
 #' @importFrom rjags jags.model jags.samples
 fitClusterModel <- function(data, startingPoints, n.iter)
 {
-  clusterCov <- cbind(c(0.005, 0), c(0, 0.1))
+  clusterCov <- cbind(c(0.005, 0), c(0, 0.1))/3
   N <- nrow(data)
   clust <- rep(NA,N) 
   dataList = list(
@@ -11,12 +11,12 @@ fitClusterModel <- function(data, startingPoints, n.iter)
     clust = clust,
     priorMuParam = diag(2)*4,
     clusterCov = clusterCov,
-    clusterCovConcentration = 10,
+    clusterCovConcentration = 30,
     errorMuParam = diag(2),
-    errorCov = diag(2)*10,
-    errorCovConcentration = 100,
-    smallClusterCov = diag(2)*0.025,
-    smallClusterCovConcentration = 500
+    errorCov = diag(2)*10/3,
+    errorCovConcentration = 300,
+    smallClusterCov = diag(2)*0.025/3,
+    smallClusterCovConcentration = 1500
   )
 
   model.spec <- textConnection(model)
