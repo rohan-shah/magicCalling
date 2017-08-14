@@ -7,15 +7,15 @@ model <- "model {
       clust[i] ~ dcat( pClust[1:4] )
     }
     # Prior:
-    covInvMatrices[1,1:2,1:2] ~ dwish(clusterCov*clusterCovConcentration, clusterCovConcentration)
-    covInvMatrices[2,1:2,1:2] ~ dwish(clusterCov*clusterCovConcentration, clusterCovConcentration)
-    covInvMatrices[3,1:2,1:2] ~ dwish(smallClusterCov*smallClusterCovConcentration, smallClusterCovConcentration)
-    covInvMatrices[4,1:2,1:2] ~ dwish(errorCov*errorCovConcentration, errorCovConcentration)
+    covInvMatrices[1,1:2,1:2] ~ dwish(V_hom*n_hom, n_hom)
+    covInvMatrices[2,1:2,1:2] ~ dwish(V_hom*n_hom, n_hom)
+    covInvMatrices[3,1:2,1:2] ~ dwish(V_het*n_het, n_het)
+    covInvMatrices[4,1:2,1:2] ~ dwish(V_err*n_err, n_err)
 
-    muOfClust[1,1:2] ~ dmnorm(c(0.25, 1), priorMuParam)
-    muOfClust[2,1:2] ~ dmnorm(c(0.75, 1), priorMuParam)
+    muOfClust[1,1:2] ~ dmnorm(c(0.25, 1), D_hom)
+    muOfClust[2,1:2] ~ dmnorm(c(0.75, 1), D_hom)
     muOfClust[3,1:2] <- (muOfClust[1,1:2] + muOfClust[2,1:2])/2
-    muOfClust[4,1:2] ~ dmnorm(c(0.5, 1), errorMuParam)
+    muOfClust[4,1:2] ~ dmnorm(c(0.5, 1),  D_err)
     mainClustAndOther[1:2] ~ ddirch(c(600, 30))
 
     tmp1 ~ ddirch(c(10, 10))

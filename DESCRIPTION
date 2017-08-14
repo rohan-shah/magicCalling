@@ -13,6 +13,7 @@ Imports:
     rjags,
     dbscan
 Collate:
+    'createData.R'
     'fitClusterModel.R'
     'model.R'
     'runHeuristics.R'
