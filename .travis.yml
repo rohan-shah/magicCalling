@@ -40,7 +40,9 @@ before_install:
  - cd ..
  - R -e "install.packages(\"coda\", repos=\"http://cran.r-project.org\")"
  - hg clone http://hg.code.sf.net/p/mcmc-jags/rjags mcmc-jags-rjags
- - export LD_RUN_PATH=/usr/local/lib:$LD_RUN_PATH
+ - export LD_RUN_PATH=/usr/local/lib/:$LD_RUN_PATH
+ - ldd /usr/local/lib/JAGS/modules-5/bugs.so
+ - ldd /usr/local/lib/libjrmath.so
  - R CMD INSTALL mcmc-jags-rjags
 
 notifications:
