@@ -36,7 +36,7 @@ before_install:
  - sed -e 's/PKG_CHECK_MODULES(\[CPPUNIT/#PKG_CHECK_MODULES(\[CPPUNIT/g' -i configure.ac
  - libtoolize && aclocal && autoconf && (automake --add-missing || true) && autoreconf
  - sed -e 's/PKG_CHECK_MODULES(\[CPPUNIT/#PKG_CHECK_MODULES(\[CPPUNIT/g' -i configure.ac
- - ./configure && make && make install
+ - ./configure && make && sudo make install
 
 notifications:
   email:
