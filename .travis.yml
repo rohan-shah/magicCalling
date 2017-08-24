@@ -38,13 +38,13 @@ before_install:
  - sed -e 's/PKG_CHECK_MODULES(\[CPPUNIT/#PKG_CHECK_MODULES(\[CPPUNIT/g' -i configure.ac
  - ./configure && make && sudo make install
  - cd ..
+ - rm -rf u-rohan-shah-mcmc-jags
  - R -e "install.packages(\"coda\", repos=\"http://cran.r-project.org\")"
  - hg clone http://hg.code.sf.net/p/mcmc-jags/rjags mcmc-jags-rjags
  - export LD_RUN_PATH=/usr/local/lib/:$LD_RUN_PATH
  - export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH
- - ldd /usr/local/lib/JAGS/modules-5/bugs.so
- - ldd /usr/local/lib/libjrmath.so
  - R CMD INSTALL mcmc-jags-rjags
+ - rm -rf mcmc-jags-rjags
 
 notifications:
   email:
