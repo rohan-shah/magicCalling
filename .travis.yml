@@ -35,6 +35,7 @@ before_install:
  - cd u-rohan-shah-mcmc-jags
  - sed -e 's/PKG_CHECK_MODULES(\[CPPUNIT/#PKG_CHECK_MODULES(\[CPPUNIT/g' -i configure.ac
  - libtoolize && aclocal && autoconf && (automake --add-missing || true)
+ - sed -e 's/PKG_CHECK_MODULES(\[CPPUNIT/#PKG_CHECK_MODULES(\[CPPUNIT/g' -i configure.ac
  - ./configure && make && make install
 
 notifications:
