@@ -38,6 +38,8 @@ before_install:
  - sed -e 's/PKG_CHECK_MODULES(\[CPPUNIT/#PKG_CHECK_MODULES(\[CPPUNIT/g' -i configure.ac
  - ./configure && make && sudo make install
  - cd ..
+ - hg clone http://hg.code.sf.net/p/mcmc-jags/rjags mcmc-jags-rjags
+ - R CMD INSTALL mcmc-jags-rjags
 
 notifications:
   email:
