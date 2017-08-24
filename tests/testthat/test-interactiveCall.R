@@ -48,7 +48,7 @@ test_that("Testing first markers",
 
 	#Redirect graphics
 	pdf(NULL)
-		interactiveResult <- interactiveCall(originalResult, startingPointFunction = startingPointFunction, n.iter = 200, dbscanParameters = list("1" = list(eps = 0.04, minPts = 65), "2" = list(eps = 0.03, minPts = 60)), clusterModelParameters = magicCalling:::exampleModelParameters, readLinesFunction = function() return(readLines(interactiveConnection, n = 1)), locatorFunction = function() return(list(x = c(0.9827357, 0.9827357), y = c(1.441651, 1.441651))))
+		interactiveResult <- interactiveCall(originalResult, startingPointFunction = startingPointFunction, n.iter = 100, dbscanParameters = list("1" = list(eps = 0.04, minPts = 65), "2" = list(eps = 0.03, minPts = 60)), clusterModelParameters = magicCalling:::exampleModelParameters, readLinesFunction = function() return(readLines(interactiveConnection, n = 1)), locatorFunction = function() return(list(x = c(0.9827357, 0.9827357), y = c(1.441651, 1.441651))))
 	dev.off()
 
 	#Should have been marked as variable
@@ -64,7 +64,7 @@ test_that("Testing first markers",
 
 	#Redirect graphics
 	pdf(NULL)
-		interactiveResult <- interactiveCall(originalResult, startingPointFunction = startingPointFunction, n.iter = 200, dbscanParameters = list("1" = list(eps = 0.04, minPts = 65), "2" = list(eps = 0.03, minPts = 60)), clusterModelParameters = magicCalling:::exampleModelParameters, readLinesFunction = function() return(readLines(interactiveConnection, n = 1)), locatorFunction = function() return(list(x = c(0.6432759, 0.6432759), y = c(1.826039, 1.826039))))
+		interactiveResult <- interactiveCall(originalResult, startingPointFunction = startingPointFunction, n.iter = 100, dbscanParameters = list("1" = list(eps = 0.04, minPts = 65), "2" = list(eps = 0.03, minPts = 60)), clusterModelParameters = magicCalling:::exampleModelParameters, readLinesFunction = function() return(readLines(interactiveConnection, n = 1)), locatorFunction = function() return(list(x = c(0.6432759, 0.6432759), y = c(1.826039, 1.826039))))
 	dev.off()
 
 	#Should have been marked as variable
