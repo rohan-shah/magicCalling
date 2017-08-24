@@ -1,15 +1,31 @@
 #' @export
-interactiveCall <- function(originalResult, data, markerName, allFounders, startingPointFunction, n.iter, dbscanParameters, clusterModelParamaters, ...)
+interactiveCall <- function(originalResult, startingPointFunction, n.iter, dbscanParameters, clusterModelParameters, ...)
 {
+	extraArgs <- list(...)
+	if(!("locatorFunction" %in% names(extraArgs)))
+	{
+		extraArgs$locatorFunction <- function()
+		{
+			return(locator(n = 2))
+		}
+	}
+	if(!("readLinesFunction" %in% names(extraArgs)))
+	{
+		extraArgs$readLinesFunction <- function()
+		{
+			return(readLines(n = 1))
+		}
+	}
 	if(class(originalResult) != "markerResult")
 	{
 		stop("Input originalResult must have class \"markerResult\"")
 	}
+	data <- originalResult$data
 	plot(originalResult)
 	previousChain <- -1
 	while(TRUE)
 	{
-		command <- readLines(n=1)
+		command <- extraArgs$readLinesFunction()
 		#Keep
 		if(command == "k")
 		{
@@ -46,7 +62,8 @@ interactiveCall <- function(originalResult, data, markerName, allFounders, start
 		else if(command == "p")
 		{
 			previousChain <- -1
-			points <- locator(n = 2)
+			#Replaced locator(n = 2) with something that can be overriden, for the purposes of testing. 
+			points <- extraArgs$locatorFunction()
 			fittedModel <- do.call(fitClusterModel, c(list(data = data, startingPoints = list(cbind(points$x, points$y)), n.iter = n.iter), clusterModelParameters))
 			heuristicResults <- runHeuristics(fittedModel)
 			plot(heuristicResults)

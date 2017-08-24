@@ -1,5 +1,5 @@
 #' @export 
-plot.magicHBC <- function(x, allFounderNames, chainIndex, ...)
+plot.hierarchicalBayesianModel <- function(x, allFounderNames, chainIndex, ...)
 {
   if(missing(chainIndex) && length(heuristicResults$classification) == 1)
   {
@@ -31,7 +31,7 @@ plot.magicHBC <- function(x, allFounderNames, chainIndex, ...)
 #' @export 
 plot.magicHeuristicHBC <- function(x, allFounderNames, chainIndex, ...)
 {
-  if(missing(chainIndex) && length(heuristicResults$classification) == 1)
+  if(missing(chainIndex) && length(x$classification) == 1)
   {
     chainIndex <- 1
   }
@@ -62,21 +62,38 @@ plot.magicHeuristicHBC <- function(x, allFounderNames, chainIndex, ...)
 plot.markerResult <- function(x, allFounderNames, ...)
 {
   data <- x$data
-  founderIndices <- na.omit(match(allFounderNames, rownames(data)))
   if(x$hasVariability)
   {
     if("dbscan" %in% names(x) && x$dbscan)
     {
-        plot(data[-founderIndices,1], data[-founderIndices,2], col = x$classification[-founderIndices] + 1, pch = 16, ...)
-        points(data[founderIndices,1], data[founderIndices,2], pch = 2, col = 1)
+    	if(missing(allFounderNames))
+	{
+          plot(data[,1], data[,2], col = x$classification + 1, pch = 16, ...)
+	}
+	else
+	{
+          founderIndices <- na.omit(match(allFounderNames, rownames(data)))
+          plot(data[-founderIndices,1], data[-founderIndices,2], col = x$classification[-founderIndices] + 1, pch = 16, ...)
+          points(data[founderIndices,1], data[founderIndices,2], pch = 2, col = 1)
+	}
     }
     else
     {
-      plot(data[-founderIndices,1], data[-founderIndices,2], col = x$classification[-founderIndices], pch = 16, ...)
-      ellipse(center = x$clusterMeans[1, ], shape = x$covariances[1,,], radius=5, col = 2, center.pch = NULL)
-      ellipse(center = x$clusterMeans[2, ], shape = x$covariances[2,,], radius=5, col = 3, center.pch = NULL)
-      ellipse(center = x$clusterMeans[3, ], shape = x$covariances[3,,], radius=5, col = 4, center.pch = NULL)
-      points(data[founderIndices,1], data[founderIndices,2], pch = 2, col = 1)
+      if(missing(allFounders))
+      {
+        plot(data[,1], data[,2], col = x$classification, pch = 16, ...)
+        ellipse(center = x$clusterMeans[1, ], shape = x$covariances[1,,], radius=5, col = 2, center.pch = NULL)
+        ellipse(center = x$clusterMeans[2, ], shape = x$covariances[2,,], radius=5, col = 3, center.pch = NULL)
+        ellipse(center = x$clusterMeans[3, ], shape = x$covariances[3,,], radius=5, col = 4, center.pch = NULL)
+      }
+      else
+      {
+        plot(data[-founderIndices,1], data[-founderIndices,2], col = x$classification[-founderIndices], pch = 16, ...)
+        ellipse(center = x$clusterMeans[1, ], shape = x$covariances[1,,], radius=5, col = 2, center.pch = NULL)
+        ellipse(center = x$clusterMeans[2, ], shape = x$covariances[2,,], radius=5, col = 3, center.pch = NULL)
+        ellipse(center = x$clusterMeans[3, ], shape = x$covariances[3,,], radius=5, col = 4, center.pch = NULL)
+        points(data[founderIndices,1], data[founderIndices,2], pch = 2, col = 1)
+      }
     }
   }
   else

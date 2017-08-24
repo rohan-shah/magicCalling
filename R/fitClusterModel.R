@@ -26,7 +26,6 @@ fitClusterModel <- function(data, startingPoints, n.iter, D_hom, V_hom, n_hom, D
     n.adapt=100, inits = inits)
   samples <- jags.samples(jags, variable.names = c("clust", "covInvMatrices", "muOfClust", "pClust"), n.iter = n.iter)
   result <- list(samples = samples, data = data)
-  class(result) <- "magicHBC"
+  class(result) <- "hierarchicalBayesianModel"
   return(result)
 }
-
