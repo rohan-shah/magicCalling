@@ -1,0 +1,53 @@
+language: r
+cache: packages
+sudo: required
+warnings_are_errors: false
+latex: false
+dist: trusty
+
+matrix:
+  include:
+   - os: linux
+     compiler: gcc 
+     addons: 
+       apt:
+         sources: ['ubuntu-toolchain-r-test']
+         packages:
+          - g++-5
+          - gfortran-5
+     env:
+      - COMPILER=g++-5
+      - CC=gcc-5
+      - CXX=g++-5
+      - FC=gfortran-5
+      - F77=gfortran-5
+      - _R_CHECK_FORCE_SUGGESTS_=0
+
+before_install:
+ - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
+ - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 100
+ - sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-5 100
+ - sudo apt-get install libblas-dev liblapack-dev
+ - mkdir -p ~/.R
+ - echo "VkVSPS01DQpDQz1nY2MkKFZFUikgLXN0ZD1jMTEgDQpDWFg9ZysrJChWRVIpDQpTSExJQl9DWFhMRD1nKyskKFZFUikNCkZDPWdmb3J0cmFuJChWRVIpDQpGNzc9Z2ZvcnRyYW4kKFZFUik=" | base64 -d > ~/.R/Makevars
+ - cat ~/.R/Makevars
+ - hg clone http://hg.code.sf.net/u/rohan-shah/mcmc-jags u-rohan-shah-mcmc-jags
+ - cd u-rohan-shah-mcmc-jags
+ - libtoolize && aclocal && autoconf && automake --add-missing
+ - sed -e 's/PKG_CHECK_MODULES(\[CPPUNIT/#PKG_CHECK_MODULES(\[CPPUNIT/g' -i configure.ac
+ - ./configure && make && make install
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+
+after_failure:
+- find *Rcheck -name '*.fail' -print -exec cat '{}' \;
+- find *Rcheck -name '00install.out' -print -exec tail -n 100 '{}' \;
+- find *Rcheck -name '00check.log' -print -exec tail -n 100 '{}' \;
+
+script: 
+  - |
+    travis_wait 20 R CMD build . --no-manual
+    travis_wait  R CMD check mpMap2*tar.gz --no-manual
