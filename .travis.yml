@@ -33,8 +33,8 @@ before_install:
  - cat ~/.R/Makevars
  - hg clone http://hg.code.sf.net/u/rohan-shah/mcmc-jags u-rohan-shah-mcmc-jags
  - cd u-rohan-shah-mcmc-jags
- - libtoolize && aclocal && autoconf && (automake --add-missing || true)
  - sed -e 's/PKG_CHECK_MODULES(\[CPPUNIT/#PKG_CHECK_MODULES(\[CPPUNIT/g' -i configure.ac
+ - libtoolize && aclocal && autoconf && (automake --add-missing || true)
  - ./configure && make && make install
 
 notifications:
