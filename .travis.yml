@@ -38,6 +38,7 @@ before_install:
  - sed -e 's/PKG_CHECK_MODULES(\[CPPUNIT/#PKG_CHECK_MODULES(\[CPPUNIT/g' -i configure.ac
  - ./configure && make && sudo make install
  - cd ..
+ - R -e "install.packages(\"coda\", repos=\"http://cran.r-project.org\")"
  - hg clone http://hg.code.sf.net/p/mcmc-jags/rjags mcmc-jags-rjags
  - R CMD INSTALL mcmc-jags-rjags
 
