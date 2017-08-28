@@ -79,7 +79,7 @@ plot.markerResult <- function(x, allFounderNames, ...)
     }
     else
     {
-      if(missing(allFounders))
+      if(missing(allFoundersNames))
       {
         plot(data[,1], data[,2], col = x$classification, pch = 16, ...)
         ellipse(center = x$clusterMeans[1, ], shape = x$covariances[1,,], radius=5, col = 2, center.pch = NULL)
@@ -88,6 +88,7 @@ plot.markerResult <- function(x, allFounderNames, ...)
       }
       else
       {
+        founderIndices <- na.omit(match(allFounderNames, rownames(data)))
         plot(data[-founderIndices,1], data[-founderIndices,2], col = x$classification[-founderIndices], pch = 16, ...)
         ellipse(center = x$clusterMeans[1, ], shape = x$covariances[1,,], radius=5, col = 2, center.pch = NULL)
         ellipse(center = x$clusterMeans[2, ], shape = x$covariances[2,,], radius=5, col = 3, center.pch = NULL)
