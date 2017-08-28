@@ -41,7 +41,8 @@ interactiveCall <- function(originalResult, startingPointFunction, n.iter, dbsca
 		#Back to original
 		else if(command == "o")
 		{
-			plot(originalResult)
+			result <- originalResult
+			plot(result)
 			previousChain <- -1
 		}
 		#Recall
