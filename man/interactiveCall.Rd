@@ -16,10 +16,12 @@ interactiveCall(originalResult, startingPointFunction, n.iter, dbscanParameters,
 
 \item{dbscanParameters}{A list with named entries. Each entry is it self a list with two entries, named \code{eps} and \code{minPts}; these entries are arguments to the DBSCAN algorithm. Each name of the list \code{dbscanParameters} is used as a hotkey in the interactive calling. See below for details.}
 
-\item{clusterModelParameters}{A list of parameters to the model based clustering algorithm. See \code{\link{fitModel}} for further details.}
+\item{clusterModelParameters}{A list of parameters to the model based clustering algorithm. See \code{\link{fitClusterModel}} for further details.}
+
+\item{...}{Undocumented arguments, used only for testing this function.}
 }
 \value{
-An object of class \code{markerResult}, containing the details of the called marker. i
+An object of class \code{markerResult}, containing the details of the called marker.
 }
 \description{
 Interactively recall a marker, using DBSCAN or model-based clustering.

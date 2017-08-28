@@ -28,7 +28,7 @@ fitClusterModel(data, startingPoints, n.iter, D_hom, V_hom, n_hom, D_err, V_err,
 
 \item{V_het}{2 x 2 covariance matrix controlling the distribution of the heterozygotes around the *mean* of the cluster. It is sensible to use a small multiple of the identity matrix, so that this cluster tends to be small.}
 
-\item{D_het}{Parameter specifying the degree of certainty about the shape of the heterozygote cluster. This parameter should be large, indicating a high degree of certainty that that the heterozygote cluster is small.}
+\item{n_het}{Parameter specifying the degree of certainty about the shape of the heterozygote cluster. This parameter should be large, indicating a high degree of certainty that that the heterozygote cluster is small.}
 }
 \description{
 Perform model-based clustering, using a normal mixture model that includes heterozygotes.

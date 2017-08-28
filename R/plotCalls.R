@@ -79,7 +79,7 @@ plot.markerResult <- function(x, allFounderNames, ...)
     }
     else
     {
-      if(missing(allFoundersNames))
+      if(missing(allFounderNames))
       {
         plot(data[,1], data[,2], col = x$classification, pch = 16, ...)
         ellipse(center = x$clusterMeans[1, ], shape = x$covariances[1,,], radius=5, col = 2, center.pch = NULL)

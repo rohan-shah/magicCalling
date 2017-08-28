@@ -5,7 +5,8 @@
 #' @param startingPointFunction A function that generates a list of starting points for the model based clustering algorithm. Each starting point is a 2 x 2 matrix, containing two column vectors. These column vectors are the initial centers for the two homozygote clusters. 
 #' @param n.iter The number of MCMC iterations to use for the model based clustering algorithm.
 #' @param dbscanParameters A list with named entries. Each entry is it self a list with two entries, named \code{eps} and \code{minPts}; these entries are arguments to the DBSCAN algorithm. Each name of the list \code{dbscanParameters} is used as a hotkey in the interactive calling. See below for details. 
-#' @param clusterModelParameters A list of parameters to the model based clustering algorithm. See \code{\link{fitModel}} for further details. 
+#' @param clusterModelParameters A list of parameters to the model based clustering algorithm. See \code{\link{fitClusterModel}} for further details. 
+#' @param ... Undocumented arguments, used only for testing this function. 
 #' @return An object of class \code{markerResult}, containing the details of the called marker.
 #' 
 #' @details
