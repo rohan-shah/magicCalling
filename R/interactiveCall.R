@@ -67,6 +67,7 @@ interactiveCall <- function(originalResult, startingPointFunction, n.iter, dbsca
 		stop("Input originalResult must have class \"markerResult\"")
 	}
 	data <- originalResult$data
+	result <- originalResult
 	plot(originalResult)
 	previousChain <- -1
 	while(TRUE)
