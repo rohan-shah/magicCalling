@@ -48,25 +48,11 @@ test_that("Testing first markers",
 	interactiveConnection <- textConnection(interactiveCommands)
 	#Redirect graphics
 	pdf(NULL)
-		suppressWarnings(capture.output(interactiveResult <- interactiveCall(originalResult, startingPointFunction = startingPointFunction, n.iter = 200, dbscanParameters = list("1" = list(eps = 0.04, minPts = 65), "2" = list(eps = 0.03, minPts = 60)), clusterModelParameters = magicCalling:::exampleModelParameters, readLinesFunction = function() return(readLines(interactiveConnection, n = 1)), locatorFunction = function() return(list(x = c(0.9827357, 0.9827357), y = c(1.441651, 1.441651))))))
+		suppressWarnings(capture.output(interactiveResult <- interactiveCall(originalResult, startingPointFunction = startingPointFunction, n.iter = 200, dbscanParameters = list(), clusterModelParameters = magicCalling:::exampleModelParameters, readLinesFunction = function() return(readLines(interactiveConnection, n = 1)), locatorFunction = function() return(list(x = c(0.6432759, 0.9827357), y = c(1.826039, 1.441651))))))
 	dev.off()
 	#Should have been marked as variable
 	expect_equal(interactiveResult$hasVariability, TRUE)
-	#Both cluster means should be around 0.98 still, clusters should be located at the same place. 
-	expect_gt(interactiveResult$clusterMeans[1,1], 0.85)
-	expect_gt(interactiveResult$clusterMeans[2,1], 0.85)
-
-
-	#Use the locator function again, but with both clusters starting on the left-most cluster. 
-	interactiveCommands <- "p\nk"
-	interactiveConnection <- textConnection(interactiveCommands)
-	#Redirect graphics
-	pdf(NULL)
-		suppressWarnings(capture.output(interactiveResult <- interactiveCall(originalResult, startingPointFunction = startingPointFunction, n.iter = 200, dbscanParameters = list(), clusterModelParameters = magicCalling:::exampleModelParameters, readLinesFunction = function() return(readLines(interactiveConnection, n = 1)), locatorFunction = function() return(list(x = c(0.6432759, 0.6432759), y = c(1.826039, 1.826039))))))
-	dev.off()
-	#Should have been marked as variable
-	expect_equal(interactiveResult$hasVariability, TRUE)
-	#In this case it seems that we get out the correct cluster assignments. 
+	#We should get out the correct cluster assignments. 
 	firstCheck <- all.equal(expectedClusterMeans, interactiveResult$clusterMeans[1:2, ], tolerance = 0.02, check.attributes = FALSE)
 	secondCheck <- all.equal(expectedClusterMeans, interactiveResult$clusterMeans[2:1, ], tolerance = 0.02, check.attributes = FALSE)
 	expect_true(isTRUE(firstCheck) || isTRUE(secondCheck))
