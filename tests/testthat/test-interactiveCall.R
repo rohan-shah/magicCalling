@@ -96,7 +96,7 @@ test_that("Testing first markers",
 	#Test DBSCAN
 	dbscanParameters <- list("1" = list(eps = 0.04, minPts = 65), "2" = list(eps = 0.01, minPts = 10))
 	#Numbers four and three should do nothing. So this results in the original "No variability" result being returned. 
-	interactiveCommands <- "p\n4\n\n3\nk"
+	interactiveCommands <- "4\n\n3\nk"
 	interactiveConnection <- textConnection(interactiveCommands)
 	#Redirect graphics
 	pdf(NULL)
