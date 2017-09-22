@@ -1,4 +1,5 @@
 #' @import dbscan
+#' @import ggplot2
 #' @importFrom dbscan dbscan
 #' @importFrom car ellipse
 #' @importFrom graphics points locator plot
