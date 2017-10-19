@@ -11,13 +11,17 @@ plot.hierarchicalBayesianModel <- function(x, allFounderNames, chainIndex, ...)
     stop("Input chainIndex is required, if there are multiple Markov chains")
   }
   data <- heuristicResults$data
+  ellipse1 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][1, ], shape = heuristicResults$covariances[[chainIndex]][1,,], radius=5, col = 2, center.pch = NULL, draw = FALSE))
+  ellipse2 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][2, ], shape = heuristicResults$covariances[[chainIndex]][2,,], radius=5, col = 3, center.pch = NULL, draw = FALSE))
+  ellipse3 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][3, ], shape = heuristicResults$covariances[[chainIndex]][3,,], radius=5, col = 4, center.pch = NULL, draw = FALSE))
   if(missing(allFounderNames))
   {
     data <- data.frame(x = data[,1], y = data[,2], colour = factor(heuristicResults$classification[[chainIndex]], levels = 1:5), row.names = rownames(data))
-    ellipse1 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][1, ], shape = heuristicResults$covariances[[chainIndex]][1,,], radius=5, col = 2, center.pch = NULL, draw = FALSE))
-    ellipse2 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][2, ], shape = heuristicResults$covariances[[chainIndex]][2,,], radius=5, col = 3, center.pch = NULL, draw = FALSE))
-    ellipse3 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][3, ], shape = heuristicResults$covariances[[chainIndex]][3,,], radius=5, col = 4, center.pch = NULL, draw = FALSE))
-    ggplot(mapping = aes(x, y, colour = colour), data = data) + geom_point(shape = 16) + geom_path(data = ellipse1, mapping = aes(x, y), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + scale_shape_identity()
+    basePlot <- ggplot(mapping = aes(x, y, colour = colour), data = data) + geom_point(shape = 16)
+    built <- ggplot_build(basePlot)
+    y.range <- built$layout$panel_ranges[[1]]$y.range
+    x.range <- built$layout$panel_ranges[[1]]$x.range
+    basePlot + geom_path(data = ellipse1, mapping = aes(x, y), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + scale_shape_identity() + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
   }
   else
   {
@@ -26,11 +30,12 @@ plot.hierarchicalBayesianModel <- function(x, allFounderNames, chainIndex, ...)
     data[founderIndices, "shape"] <- 2
     data[founderIndices, "colour"] <- 1
     #Split out the founder indices subset, because these will have different plot symbols, which we want to appear *on top* of everything else.
-    founderIndicesSubset <- data[data[,"shape"] == 2,]
-    ellipse1 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][1, ], shape = heuristicResults$covariances[[chainIndex]][1,,], radius=5, col = 2, center.pch = NULL, draw = FALSE))
-    ellipse2 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][2, ], shape = heuristicResults$covariances[[chainIndex]][2,,], radius=5, col = 3, center.pch = NULL, draw = FALSE))
-    ellipse3 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][3, ], shape = heuristicResults$covariances[[chainIndex]][3,,], radius=5, col = 4, center.pch = NULL, draw = FALSE))
-    ggplot(mapping = aes(x, y, colour = colour, shape = shape), data = data) + geom_point() + geom_path(data = ellipse1, mapping = aes(x, y, shape = NULL), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y, shape = NULL), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y, shape = NULL), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + scale_shape_identity() + geom_point(data = founderIndicesSubset)
+    founderIndicesSubset <- data[data[,"shape"] == 2, ]
+    basePlot <-  ggplot(mapping = aes(x, y, colour = colour, shape = shape), data = data) + geom_point() 
+    built <- ggplot_build(basePlot)
+    y.range <- built$layout$panel_ranges[[1]]$y.range
+    x.range <- built$layout$panel_ranges[[1]]$x.range
+    basePlot + geom_path(data = ellipse1, mapping = aes(x, y, shape = NULL), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y, shape = NULL), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y, shape = NULL), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + scale_shape_identity() + geom_point(data = founderIndicesSubset) + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
   }
 }
 #' @export 
@@ -46,13 +51,17 @@ plot.magicHeuristicHBC <- function(x, allFounderNames, chainIndex, ...)
   }
   heuristicResults <- x
   data <- heuristicResults$data
+  ellipse1 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][1, ], shape = heuristicResults$covariances[[chainIndex]][1,,], radius=5, col = 2, center.pch = NULL, draw = FALSE))
+  ellipse2 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][2, ], shape = heuristicResults$covariances[[chainIndex]][2,,], radius=5, col = 3, center.pch = NULL, draw = FALSE))
+  ellipse3 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][3, ], shape = heuristicResults$covariances[[chainIndex]][3,,], radius=5, col = 4, center.pch = NULL, draw = FALSE))
   if(missing(allFounderNames))
   {
     data <- data.frame(x = data[,1], y = data[,2], colour = factor(heuristicResults$classification[[chainIndex]], levels = 1:5), row.names = rownames(data))
-    ellipse1 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][1, ], shape = heuristicResults$covariances[[chainIndex]][1,,], radius=5, col = 2, center.pch = NULL, draw = FALSE))
-    ellipse2 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][2, ], shape = heuristicResults$covariances[[chainIndex]][2,,], radius=5, col = 3, center.pch = NULL, draw = FALSE))
-    ellipse3 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][3, ], shape = heuristicResults$covariances[[chainIndex]][3,,], radius=5, col = 4, center.pch = NULL, draw = FALSE))
-    ggplot(mapping = aes(x, y, colour = colour), data = data) + geom_point(shape = 16) + geom_path(data = ellipse1, mapping = aes(x, y), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + scale_shape_identity()
+    basePlot <- ggplot(mapping = aes(x, y, colour = colour), data = data) + geom_point(shape = 16) 
+    built <- ggplot_build(basePlot)
+    y.range <- built$layout$panel_ranges[[1]]$y.range
+    x.range <- built$layout$panel_ranges[[1]]$x.range
+    basePlot + geom_path(data = ellipse1, mapping = aes(x, y), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + scale_shape_identity() + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
   }
   else
   {
@@ -62,10 +71,11 @@ plot.magicHeuristicHBC <- function(x, allFounderNames, chainIndex, ...)
     data[founderIndices, "colour"] <- 1
     #Split out the founder indices subset, because these will have different plot symbols, which we want to appear *on top* of everything else.
     founderIndicesSubset <- data[data[,"shape"] == 2,]
-    ellipse1 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][1, ], shape = heuristicResults$covariances[[chainIndex]][1,,], radius=5, col = 2, center.pch = NULL, draw = FALSE))
-    ellipse2 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][2, ], shape = heuristicResults$covariances[[chainIndex]][2,,], radius=5, col = 3, center.pch = NULL, draw = FALSE))
-    ellipse3 <- as.data.frame(ellipse(center = heuristicResults$clusterMeans[[chainIndex]][3, ], shape = heuristicResults$covariances[[chainIndex]][3,,], radius=5, col = 4, center.pch = NULL, draw = FALSE))
-    ggplot(mapping = aes(x, y, colour = colour, shape = shape), data = data) + geom_point() + geom_path(data = ellipse1, mapping = aes(x, y, shape = NULL), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y, shape = NULL), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y, shape = NULL), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + geom_point(data = founderIndicesSubset) + scale_shape_identity()
+    basePlot <- ggplot(mapping = aes(x, y, colour = colour, shape = shape), data = data) + geom_point() 
+    built <- ggplot_build(basePlot)
+    y.range <- built$layout$panel_ranges[[1]]$y.range
+    x.range <- built$layout$panel_ranges[[1]]$x.range
+    basePlot + geom_path(data = ellipse1, mapping = aes(x, y, shape = NULL), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y, shape = NULL), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y, shape = NULL), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + geom_point(data = founderIndicesSubset) + scale_shape_identity() + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
   }
 }
 #' @export 
@@ -94,13 +104,17 @@ plot.markerResult <- function(x, allFounderNames, ...)
     }
     else
     {
+      ellipse1 <- as.data.frame(ellipse(center = x$clusterMeans[1, ], shape = x$covariances[1,,], radius=5, col = 2, center.pch = NULL, draw = FALSE))
+      ellipse2 <- as.data.frame(ellipse(center = x$clusterMeans[2, ], shape = x$covariances[2,,], radius=5, col = 3, center.pch = NULL, draw = FALSE))
+      ellipse3 <- as.data.frame(ellipse(center = x$clusterMeans[3, ], shape = x$covariances[3,,], radius=5, col = 4, center.pch = NULL, draw = FALSE))
       if(missing(allFounderNames))
       {
         data <- data.frame(x = data[,1], y = data[,2], colour = factor(x$classification, levels = 1:5), row.names = rownames(data))
-        ellipse1 <- as.data.frame(ellipse(center = x$clusterMeans[1, ], shape = x$covariances[1,,], radius=5, col = 2, center.pch = NULL, draw = FALSE))
-        ellipse2 <- as.data.frame(ellipse(center = x$clusterMeans[2, ], shape = x$covariances[2,,], radius=5, col = 3, center.pch = NULL, draw = FALSE))
-        ellipse3 <- as.data.frame(ellipse(center = x$clusterMeans[3, ], shape = x$covariances[3,,], radius=5, col = 4, center.pch = NULL, draw = FALSE))
-        ggplot(mapping = aes(x, y, colour = colour), data = data) + geom_point(shape = 16) + geom_path(data = ellipse1, mapping = aes(x, y), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE)
+        basePlot <- ggplot(mapping = aes(x, y, colour = colour), data = data) + geom_point(shape = 16) 
+        built <- ggplot_build(basePlot)
+        y.range <- built$layout$panel_ranges[[1]]$y.range
+        x.range <- built$layout$panel_ranges[[1]]$x.range
+	basePlot + geom_path(data = ellipse1, mapping = aes(x, y), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
       }
       else
       {
@@ -110,10 +124,11 @@ plot.markerResult <- function(x, allFounderNames, ...)
 	data[founderIndices, "colour"] <- 1
 	#Split out the founder indices subset, because these will have different plot symbols, which we want to appear *on top* of everything else.
 	founderIndicesSubset <- data[data[,"shape"] == 2,]
-        ellipse1 <- as.data.frame(ellipse(center = x$clusterMeans[1, ], shape = x$covariances[1,,], radius=5, col = 2, center.pch = NULL, draw = FALSE))
-        ellipse2 <- as.data.frame(ellipse(center = x$clusterMeans[2, ], shape = x$covariances[2,,], radius=5, col = 3, center.pch = NULL, draw = FALSE))
-        ellipse3 <- as.data.frame(ellipse(center = x$clusterMeans[3, ], shape = x$covariances[3,,], radius=5, col = 4, center.pch = NULL, draw = FALSE))
-        ggplot(mapping = aes(x, y, colour = colour, shape = shape), data = data) + geom_point() + geom_path(data = ellipse1, mapping = aes(x, y, shape = NULL), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y, shape = NULL), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y, shape = NULL), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + scale_shape_identity() + geom_point(data = founderIndicesSubset)
+        basePlot <- ggplot(mapping = aes(x, y, colour = colour, shape = shape), data = data) + geom_point()
+        built <- ggplot_build(basePlot)
+        y.range <- built$layout$panel_ranges[[1]]$y.range
+        x.range <- built$layout$panel_ranges[[1]]$x.range
+	basePlot + geom_path(data = ellipse1, mapping = aes(x, y, shape = NULL), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y, shape = NULL), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y, shape = NULL), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + scale_shape_identity() + geom_point(data = founderIndicesSubset) + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
       }
     }
   }

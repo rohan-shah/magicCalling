@@ -9,7 +9,9 @@ Description: Tools for calling SNP markers in multi-parent RIL populations (also
     known as MAGIC populations).
 License: GPL-3
 LazyLoad: yes
-Depends: R (>= 2.10)
+Depends: 
+    R (>= 2.10),
+    ggplot2
 Suggests:
     testthat
 Imports:
