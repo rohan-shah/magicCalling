@@ -5,7 +5,7 @@
 \title{Interactively recall a marker}
 \usage{
 interactiveCall(originalResult, startingPointFunction, n.iter, dbscanParameters,
-  clusterModelParameters, ...)
+  clusterModelParameters, runHeuristicsParameters, ...)
 }
 \arguments{
 \item{originalResult}{The previous attempt at calling this marker. Must be an object of class \code{markerResult}. If no attempt has previously been made, a suitable value is \code{list(data = data, hasVariability = TRUE)}, with class set to \code{markerResult}; this specifies that in the previous calling result, this marker was determined to be monomorphic.}
@@ -17,6 +17,8 @@ interactiveCall(originalResult, startingPointFunction, n.iter, dbscanParameters,
 \item{dbscanParameters}{A list with named entries. Each entry is it self a list with two entries, named \code{eps} and \code{minPts}; these entries are arguments to the DBSCAN algorithm. Each name of the list \code{dbscanParameters} is used as a hotkey in the interactive calling. See below for details.}
 
 \item{clusterModelParameters}{A list of parameters to the model based clustering algorithm. See \code{\link{fitClusterModel}} for further details.}
+
+\item{runHeuristicsParameters}{A list of parameters to the runHeuristics function.}
 
 \item{...}{Undocumented arguments, used only for testing this function.}
 }

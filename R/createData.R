@@ -1,4 +1,5 @@
 #' Function used to generate the example data. 
+#' @param rawDataPartsDir Directory containing the data to be distributed with the package. 
 createData <- function(rawDataPartsDir)
 {
 	wd <- getwd()

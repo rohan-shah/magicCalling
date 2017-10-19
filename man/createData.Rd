@@ -6,6 +6,9 @@
 \usage{
 createData(rawDataPartsDir)
 }
+\arguments{
+\item{rawDataPartsDir}{Directory containing the data to be distributed with the package.}
+}
 \description{
 Function used to generate the example data.
 }

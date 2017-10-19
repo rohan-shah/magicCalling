@@ -6,6 +6,7 @@
 #' @param n.iter The number of MCMC iterations to use for the model based clustering algorithm.
 #' @param dbscanParameters A list with named entries. Each entry is it self a list with two entries, named \code{eps} and \code{minPts}; these entries are arguments to the DBSCAN algorithm. Each name of the list \code{dbscanParameters} is used as a hotkey in the interactive calling. See below for details. 
 #' @param clusterModelParameters A list of parameters to the model based clustering algorithm. See \code{\link{fitClusterModel}} for further details. 
+#' @param runHeuristicsParameters A list of parameters to the runHeuristics function. 
 #' @param ... Undocumented arguments, used only for testing this function. 
 #' @return An object of class \code{markerResult}, containing the details of the called marker.
 #' 
@@ -45,7 +46,7 @@
 #' #In this call, commands "1" and "2" run DBSCAN. Command "c" calls the model-based clustering algorithm, generating eight possible calls, and displays the first. The next seven commands "c" show the next model-based call. The eighth command "c" generates another eight possible calls and shows the first, etc. 
 #' interactiveResult <- interactiveCall(originalResult, startingPointFunction = startingPointFunction, n.iter = 200, dbscanParameters = exampleDbscanParameters, clusterModelParameters = magicCalling:::exampleModelParameters)
 #' }
-interactiveCall <- function(originalResult, startingPointFunction, n.iter, dbscanParameters, clusterModelParameters, ...)
+interactiveCall <- function(originalResult, startingPointFunction, n.iter, dbscanParameters, clusterModelParameters, runHeuristicsParameters, ...)
 {
 	extraArgs <- list(...)
 	if(!("locatorFunction" %in% names(extraArgs)))
@@ -98,7 +99,7 @@ interactiveCall <- function(originalResult, startingPointFunction, n.iter, dbsca
 			if(previousChain == -1 || previousChain == length(heuristicResults$classifications))
 			{
 				fittedModel <- do.call(fitClusterModel, c(list(data = data, startingPoints = startingPointFunction(data), n.iter = n.iter), clusterModelParameters))
-				heuristicResults <- runHeuristics(fittedModel)
+				heuristicResults <- do.call(runHeuristics, c(list(fittedModel = fittedModel), runHeuristicsParameters))
 				previousChain <- 1
 			}
 			else previousChain <- previousChain + 1
@@ -113,7 +114,7 @@ interactiveCall <- function(originalResult, startingPointFunction, n.iter, dbsca
 			#Replaced locator(n = 2) with something that can be overriden, for the purposes of testing. 
 			points <- extraArgs$locatorFunction()
 			fittedModel <- do.call(fitClusterModel, c(list(data = data, startingPoints = list(cbind(points$x, points$y)), n.iter = n.iter), clusterModelParameters))
-			heuristicResults <- runHeuristics(fittedModel)
+			heuristicResults <- do.call(runHeuristics, c(list(fittedModel = fittedModel), runHeuristicsParameters))
 			plot(heuristicResults)
 			result <- list(hasVariability = TRUE, classifications = heuristicResults$classifications[[1]], clusterMeans = heuristicResults$clusterMeans[[1]], covariances = heuristicResults$covariances[[1]], data = data, dbscan = FALSE)
 			class(result) <- "markerResult"
