@@ -17,11 +17,11 @@ plot.hierarchicalBayesianModel <- function(x, allFounderNames, chainIndex, ...)
   if(missing(allFounderNames))
   {
     data <- data.frame(x = data[,1], y = data[,2], colour = factor(heuristicResults$classification[[chainIndex]], levels = 1:5), row.names = rownames(data))
-    basePlot <- ggplot(mapping = aes(x, y, colour = colour), data = data) + geom_point(shape = 16)
-    built <- ggplot_build(basePlot)
+    basePlot <- ggplot2::ggplot(mapping = ggplot2::aes_string(x = "x", y = "y", colour = "colour"), data = data) + ggplot2::geom_point(shape = 16)
+    built <- ggplot2::ggplot_build(basePlot)
     y.range <- built$layout$panel_ranges[[1]]$y.range
     x.range <- built$layout$panel_ranges[[1]]$x.range
-    basePlot + geom_path(data = ellipse1, mapping = aes(x, y), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + scale_shape_identity() + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
+    basePlot + ggplot2::geom_path(data = ellipse1, mapping = ggplot2::aes_string(x = "x", y = "y"), colour = 2) + ggplot2::geom_path(data = ellipse2, mapping = ggplot2::aes(x = "x", y = "y"), colour = 3) + ggplot2::geom_path(data = ellipse3, mapping = ggplot2::aes_string(x = "x", y = "y"), colour = 4) + ggplot2::theme_bw() + ggplot2::scale_color_manual(values = palette(), guide = FALSE) + ggplot2::scale_shape_identity() + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
   }
   else
   {
@@ -31,11 +31,11 @@ plot.hierarchicalBayesianModel <- function(x, allFounderNames, chainIndex, ...)
     data[founderIndices, "colour"] <- 1
     #Split out the founder indices subset, because these will have different plot symbols, which we want to appear *on top* of everything else.
     founderIndicesSubset <- data[data[,"shape"] == 2, ]
-    basePlot <-  ggplot(mapping = aes(x, y, colour = colour, shape = shape), data = data) + geom_point() 
-    built <- ggplot_build(basePlot)
+    basePlot <-  ggplot2::ggplot(mapping = ggplot2::aes_string(x = "x", y = "y", colour = "colour", shape = "shape"), data = data) + ggplot2::geom_point() 
+    built <- ggplot2::ggplot_build(basePlot)
     y.range <- built$layout$panel_ranges[[1]]$y.range
     x.range <- built$layout$panel_ranges[[1]]$x.range
-    basePlot + geom_path(data = ellipse1, mapping = aes(x, y, shape = NULL), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y, shape = NULL), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y, shape = NULL), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + scale_shape_identity() + geom_point(data = founderIndicesSubset) + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
+    basePlot + ggplot2::geom_path(data = ellipse1, mapping = ggplot2::aes_string(x = "x", y = "y", shape = NULL), colour = 2) + ggplot2::geom_path(data = ellipse2, mapping = ggplot2::aes_string(x = "x", y = "y", shape = NULL), colour = 3) + ggplot2::geom_path(data = ellipse3, mapping = ggplot2::aes_string(x = "x", y = "y", shape = NULL), colour = 4) + ggplot2::theme_bw() + ggplot2::scale_color_manual(values = palette(), guide = FALSE) + ggplot2::scale_shape_identity() + ggplot2::geom_point(data = founderIndicesSubset) + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
   }
 }
 #' @export 
@@ -57,11 +57,11 @@ plot.magicHeuristicHBC <- function(x, allFounderNames, chainIndex, ...)
   if(missing(allFounderNames))
   {
     data <- data.frame(x = data[,1], y = data[,2], colour = factor(heuristicResults$classification[[chainIndex]], levels = 1:5), row.names = rownames(data))
-    basePlot <- ggplot(mapping = aes(x, y, colour = colour), data = data) + geom_point(shape = 16) 
-    built <- ggplot_build(basePlot)
+    basePlot <- ggplot2::ggplot(mapping = ggplot2::aes_string(x = "x", y = "y", colour = "colour"), data = data) + ggplot2::geom_point(shape = 16) 
+    built <- ggplot2::ggplot_build(basePlot)
     y.range <- built$layout$panel_ranges[[1]]$y.range
     x.range <- built$layout$panel_ranges[[1]]$x.range
-    basePlot + geom_path(data = ellipse1, mapping = aes(x, y), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + scale_shape_identity() + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
+    basePlot + ggplot2::geom_path(data = ellipse1, mapping = ggplot2::aes_string(x = "x", y = "y"), colour = 2) + ggplot2::geom_path(data = ellipse2, mapping = ggplot2::aes_string(x = "x", y = "y"), colour = 3) + ggplot2::geom_path(data = ellipse3, mapping = ggplot2::aes_string(x = "x", y = "y"), colour = 4) + ggplot2::theme_bw() + ggplot2::scale_color_manual(values = palette(), guide = FALSE) + ggplot2::scale_shape_identity() + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
   }
   else
   {
@@ -71,11 +71,11 @@ plot.magicHeuristicHBC <- function(x, allFounderNames, chainIndex, ...)
     data[founderIndices, "colour"] <- 1
     #Split out the founder indices subset, because these will have different plot symbols, which we want to appear *on top* of everything else.
     founderIndicesSubset <- data[data[,"shape"] == 2,]
-    basePlot <- ggplot(mapping = aes(x, y, colour = colour, shape = shape), data = data) + geom_point() 
-    built <- ggplot_build(basePlot)
+    basePlot <- ggplot2::ggplot(mapping = ggplot2::aes_string(x = "x", y = "y", colour = "colour", shape = "shape"), data = data) + ggplot2::geom_point() 
+    built <- ggplot2::ggplot_build(basePlot)
     y.range <- built$layout$panel_ranges[[1]]$y.range
     x.range <- built$layout$panel_ranges[[1]]$x.range
-    basePlot + geom_path(data = ellipse1, mapping = aes(x, y, shape = NULL), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y, shape = NULL), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y, shape = NULL), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + geom_point(data = founderIndicesSubset) + scale_shape_identity() + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
+    basePlot + ggplot2::geom_path(data = ellipse1, mapping = ggplot2::aes_string(x = "x", y = "y", shape = NULL), colour = 2) + ggplot2::geom_path(data = ellipse2, mapping = ggplot2::aes_string(x = "x", y = "y", shape = NULL), colour = 3) + ggplot2::geom_path(data = ellipse3, mapping = ggplot2::aes_string(x = "x", y = "y", shape = NULL), colour = 4) + ggplot2::theme_bw() + ggplot2::scale_color_manual(values = palette(), guide = FALSE) + ggplot2::geom_point(data = founderIndicesSubset) + ggplot2::scale_shape_identity() + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
   }
 }
 #' @export 
@@ -89,7 +89,7 @@ plot.markerResult <- function(x, allFounderNames, ...)
     	if(missing(allFounderNames))
 	{
           data <- data.frame(x = data[,1], y = data[,2], colour = factor(x$classification + 1, levels = 1:(max(x$classification)+1)))
-          ggplot(mapping = aes(x, y, colour = colour), data = data) + geom_point(shape = 16) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE)
+          ggplot2::ggplot(mapping = ggplot2::aes_string(x = "x", y = "y", colour = "colour"), data = data) + ggplot2::geom_point(shape = 16) + ggplot2::theme_bw() + ggplot2::scale_color_manual(values = palette(), guide = FALSE)
 	}
 	else
 	{
@@ -99,7 +99,7 @@ plot.markerResult <- function(x, allFounderNames, ...)
 	  data[founderIndices, "colour"] <- 1
           #Split out the founder indices subset, because these will have different plot symbols, which we want to appear *on top* of everything else.
           founderIndicesSubset <- data[data[,"shape"] == 2,]
-          ggplot(mapping = aes(x, y, colour = colour, shape = shape), data = data) + geom_point() + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + geom_point(data = founderIndicesSubset) + scale_shape_identity()
+          ggplot2::ggplot(mapping = ggplot2::aes(x = "x", y = "y", colour = "colour", shape = "shape"), data = data) + ggplot2::geom_point() + ggplot2::theme_bw() + ggplot2::scale_color_manual(values = palette(), guide = FALSE) + ggplot2::geom_point(data = founderIndicesSubset) + ggplot2::scale_shape_identity()
 	}
     }
     else
@@ -110,11 +110,11 @@ plot.markerResult <- function(x, allFounderNames, ...)
       if(missing(allFounderNames))
       {
         data <- data.frame(x = data[,1], y = data[,2], colour = factor(x$classification, levels = 1:5), row.names = rownames(data))
-        basePlot <- ggplot(mapping = aes(x, y, colour = colour), data = data) + geom_point(shape = 16) 
-        built <- ggplot_build(basePlot)
+        basePlot <- ggplot2::ggplot(mapping = ggplot2::aes_string(x = "x", y = "y", colour = "colour"), data = data) + ggplot2::geom_point(shape = 16) 
+        built <- ggplot2::ggplot_build(basePlot)
         y.range <- built$layout$panel_ranges[[1]]$y.range
         x.range <- built$layout$panel_ranges[[1]]$x.range
-	basePlot + geom_path(data = ellipse1, mapping = aes(x, y), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
+	basePlot + ggplot2::geom_path(data = ellipse1, mapping = ggplot2::aes_string(x = "x", y = "y"), colour = 2) + ggplot2::geom_path(data = ellipse2, mapping = ggplot2::aes_string(x = "x", y = "y"), colour = 3) + ggplot2::geom_path(data = ellipse3, mapping = ggplot2::aes_string(x = "x", y = "y"), colour = 4) + ggplot2::theme_bw() + ggplot2::scale_color_manual(values = palette(), guide = FALSE) + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
       }
       else
       {
@@ -124,17 +124,17 @@ plot.markerResult <- function(x, allFounderNames, ...)
 	data[founderIndices, "colour"] <- 1
 	#Split out the founder indices subset, because these will have different plot symbols, which we want to appear *on top* of everything else.
 	founderIndicesSubset <- data[data[,"shape"] == 2,]
-        basePlot <- ggplot(mapping = aes(x, y, colour = colour, shape = shape), data = data) + geom_point()
-        built <- ggplot_build(basePlot)
+        basePlot <- ggplot2::ggplot(mapping = ggplot2::aes_string(x = "x", y = "y", colour = "colour", shape = "shape"), data = data) + ggplot2::geom_point()
+        built <- ggplot2::ggplot_build(basePlot)
         y.range <- built$layout$panel_ranges[[1]]$y.range
         x.range <- built$layout$panel_ranges[[1]]$x.range
-	basePlot + geom_path(data = ellipse1, mapping = aes(x, y, shape = NULL), colour = 2) + geom_path(data = ellipse2, mapping = aes(x, y, shape = NULL), colour = 3) + geom_path(data = ellipse3, mapping = aes(x, y, shape = NULL), colour = 4) + theme_bw() + scale_color_manual(values = palette(), guide = FALSE) + scale_shape_identity() + geom_point(data = founderIndicesSubset) + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
+	basePlot + ggplot2::geom_path(data = ellipse1, mapping = ggplot2::aes_string(x = "x", y = "y", shape = NULL), colour = 2) + ggplot2::geom_path(data = ellipse2, mapping = ggplot2::aes_string(x = "x", y = "y", shape = NULL), colour = 3) + ggplot2::geom_path(data = ellipse3, mapping = ggplot2::aes_string(x = "x", y = "y", shape = NULL), colour = 4) + ggplot2::theme_bw() + ggplot2::scale_color_manual(values = palette(), guide = FALSE) + ggplot2::scale_shape_identity() + ggplot2::geom_point(data = founderIndicesSubset) + coord_cartesian(xlim = x.range, ylim = y.range, expand = FALSE)
       }
     }
   }
   else
   {
     data <- data.frame(x = data[,1], y = data[,2], row.names = rownames(data))
-    ggplot(mapping = aes(x, y), data = data) + geom_point(colour = 1, shape = 16) + scale_shape_identity()
+    ggplot2::ggplot(mapping = ggplot2::aes_string(x = "x", y = "y"), data = data) + ggplot2::geom_point(colour = 1, shape = 16) + ggplot2::scale_shape_identity()
   }
 }

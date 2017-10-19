@@ -1,5 +1,25 @@
 #' @export
-runHeuristics <- function(fittedModel)
+#' @title Select best fit of the hierarchical Bayesian cluster model
+#' @description Use heuristics to select the best-fitting hierarchical Bayesian cluster model, from multiple fitted models. Certain data processing is performed using the best fitting model, to generate a cluster assignment variable. 
+#' @param fittedModel An object of class \code{hierarchicalBayesianModel}, containing data about one or more fitted models. 
+#' @param minHomozygoteSize The minimum allowable size of the homyzoget clusters. 
+#' @return An object of class \code{magicHeuristicHBC}, which only contains data about the best-fitting model. 
+#' 
+#' @details
+#' This function takes as input multiple fitted Hierarchical Bayesian Cluster models. These models are fitted using MCMC, often using different initial states. This function produces a summary of the fitted modles, including cluster assignment variables and component covariance matrices.  It also chooses a `best' fitted model. 
+#'
+#' Selecting the `best' fitted model is complicated. We begin by rejecting models for which any of the following are true:
+#' \describe{
+#' 	\item{1.}{For more than 5\% of the data points, the posterior probability of membership is more than 15\%, for BOTH homozygote clusters}
+#' 	\item{2.}{Either of the homozygote clusters is smaller than minHomozygoteSize}
+#' 	\item{3.}{The diffeence in the x-coordinate of the two homozygote clusters is smaller than 0.06}
+#'	\item{4.}{More than a quater of the points fall into the outlier cluster}
+#' 	\item{5.}{The difference in the centers of the homozygote clusters is small, relative to the covariance matrix of those clusters}
+#' }
+#' If there are any remaining models, then for each model we compute the determinants of the covariance matrices of the heterozygote clusters. We select the model for this value (the maximum determinant) is smallest. 
+#'
+#' If there are no remaining models, then the returned object indicates that no suitable model was found. 
+runHeuristics <- function(fittedModel, minHomozygoteSize)
 {
   N <- nrow(fittedModel$data)
   samples <- fittedModel$samples
@@ -19,7 +39,7 @@ runHeuristics <- function(fittedModel)
     quadratic1 <- (samples$muOfClust[1,,n.iter, chain] - samples$muOfClust[2,,n.iter, chain]) %*% samples$covInvMatrices[1,,,n.iter, chain] %*% (samples$muOfClust[1,,n.iter, chain] - samples$muOfClust[2,,n.iter, chain])
     quadratic2 <- (samples$muOfClust[1,,n.iter, chain] - samples$muOfClust[2,,n.iter, chain]) %*% samples$covInvMatrices[2,,,n.iter, chain] %*% (samples$muOfClust[1,,n.iter, chain] - samples$muOfClust[2,,n.iter, chain])
     maxDetsThisChain <- max(det(solve(samples$covInvMatrices[1, , , n.iter, chain])), det(solve(samples$covInvMatrices[2, , , n.iter, chain])))
-    if(sum(cluster1Counts > n.iter * 0.15 & cluster2Counts > n.iter * 0.15) > 0.05 * N || sum(cluster1Counts > n.iter*0.5) < 200 || sum(cluster2Counts > n.iter*0.5) < 200 || abs(samples$muOfClust[2,1,n.iter,chain] - samples$muOfClust[1,1,n.iter,chain]) < 0.06 || sum(cluster4Counts > n.iter * 0.5) > 0.25 * N || quadratic1 < 25 || quadratic2 < 25 || maxDetsThisChain > 4e-4)
+    if(sum(cluster1Counts > n.iter * 0.15 & cluster2Counts > n.iter * 0.15) > 0.05 * N || sum(cluster1Counts > n.iter*0.5) < minHomozygoteSize || sum(cluster2Counts > n.iter*0.5) < minHomozygoteSize || abs(samples$muOfClust[2,1,n.iter,chain] - samples$muOfClust[1,1,n.iter,chain]) < 0.06 || sum(cluster4Counts > n.iter * 0.5) > 0.25 * N || quadratic1 < 25 || quadratic2 < 25 || maxDetsThisChain > 4e-4)
     {
     } else
     {

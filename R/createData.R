@@ -1,4 +1,5 @@
-createData <- function()
+#' Function used to generate the example data. 
+createData <- function(rawDataPartsDir)
 {
 	wd <- getwd()
 	setwd("~/8way_map")
