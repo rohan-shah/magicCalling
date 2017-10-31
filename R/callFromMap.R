@@ -36,19 +36,24 @@ callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClus
 		#The max cliques should actually partition the graph, so check that
 		maxCliqueVector <- do.call(c, maxCliques)
 		if(length(maxCliqueVector) != 8 || length(unique(maxCliqueVector)) != 8) return(NULL)
+		#If marker is monomorphic, return NULL
+		if(length(maxCliques) == 1) return(NULL)
 		clusters[[position]] <- maxCliques
 	}
 	classifyPosition <- function(position)
 	{
-		factor(as.integer(dataPerPosition[[position]] %in% clusters[[position]][[1]]))
+		mapping <- vector(mode = "integer", length = 8)
+		for(clusterCounter in 1:length(clusters[[position]])) mapping[clusters[[position]][[clusterCounter]]] <- clusterCounter
+		return(mapping[as.integer(dataPerPosition[[position]])])
 	}
 	groups <- sapply(bestPositionsChromosomes, classifyPosition, simplify = FALSE)
 	combinedGroups <- do.call(interaction, groups)
 	nCombinedGroups <- length(levels(combinedGroups))
 	levels(combinedGroups) <- as.character(1:nCombinedGroups)
 
-	clusterAssignments <- vector(mode = "integer", length = nrow(rawData))
-	clusterAssignments[] <- NA
+	overallClusterAssignments <- vector(mode = "integer", length = nrow(rawData))
+	overallClusterAssignments[] <- NA
+	clusterAssignmentsPerPosition <- list()
 	for(group in 1:nCombinedGroups)
 	{
 		groupData <- dataSubset[combinedGroups == group,]
@@ -64,7 +69,23 @@ callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClus
 		contourValue <- mean(sn:::dmst(data, dp = plotResults$object@dp))
 
 		isInside <- sn:::dmst(rawData, dp = plotResults$object@dp) > contourValue
-		clusterAssignments[isInside] <- group
+		overallClusterAssignments[isInside] <- group
 	}
-	return(clusterAssignments)
+	classificationsPerPosition <- list()
+	for(position in bestPositionsChromosomes)
+	{
+		mapping <- vector(mode = "integer", length = 8)
+		for(clusterCounter in 1:length(clusters[[position]])) mapping[clusters[[position]][[clusterCounter]]] <- clusterCounter
+		currentPositionClassificationTable <- mapping[dataPerPosition[[position]]]
+		conversionTable <- table(overallClusterAssignments, currentPositionClassificationTable)
+		
+		result <- vector(mode = "integer", length = nrow(rawData))
+		for(group in 1:nCombinedGroups)
+		{
+			result[overallClusterAssignments == group] <- which.max(conversionTable[group,])
+		}
+		classificationsPerPosition[[position]] <- result
+	}
+
+	return(list(overallAssignment = overallClusterAssignments, classificationsPerPosition = classificationsPerPosition))
 }
