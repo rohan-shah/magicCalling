@@ -11,7 +11,9 @@ License: GPL-3
 LazyLoad: yes
 Depends: 
     R (>= 2.10),
-    ggplot2
+    ggplot2,
+    igraph,
+    sn
 Suggests:
     testthat
 Imports:
@@ -19,6 +21,7 @@ Imports:
     dbscan,
     car
 Collate:
+    'callFromMap.R'
     'createData.R'
     'exampleModelParameters.R'
     'fitClusterModel.R'

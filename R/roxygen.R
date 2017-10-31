@@ -6,6 +6,10 @@
 #' @importFrom grDevices palette
 #' @importFrom stats na.omit 
 #' @importFrom rjags jags.model jags.samples
+#' @importFrom sn dmst extractSECdistr selm
+#' @importFrom igraph max_cliques graph_from_adjacency_matrix
+#' @importClassesFrom sn SECdistrMv
+#' @importMethodsFrom sn plot
 NULL
 
 #' @name eightWayExampleData
