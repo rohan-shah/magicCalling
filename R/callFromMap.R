@@ -1,5 +1,5 @@
 #' @export
-callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClusters = 1e-10, maxChromosomes = 2, existingImputations)
+callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClusters = 1e-10, maxChromosomes = 2, existingImputations, tDistributionPValue = 0.6)
 {
 	rawResult <- addExtraMarkerFromRawCall(mpcrossMapped = existingImputations, newMarker = rawData)
 	chromosomes <- names(existingImputations@map)
@@ -52,8 +52,10 @@ callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClus
 	levels(combinedGroups) <- as.character(1:nCombinedGroups)
 
 	overallClusterAssignments <- vector(mode = "integer", length = nrow(rawData))
+	names(overallClusterAssignments) <- rownames(rawData)
 	overallClusterAssignments[] <- NA
 	clusterAssignmentsPerPosition <- list()
+	insideNumberOfGroups <- vector(mode = "integer", length = nrow(rawData))
 	for(group in 1:nCombinedGroups)
 	{
 		groupData <- dataSubset[combinedGroups == group,]
@@ -63,14 +65,22 @@ callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClus
 		distribution <- extractSECdistr(model, compNames = c("x", "y"))
 
 		pdf(NULL)
-			plotResults <- plot(distribution, col = 2, probs = 0.5, landmarks = "")
+			plotResults <- plot(distribution, col = 2, probs = tDistributionPValue, landmarks = "")
 		dev.off()
 		data <- cbind(plotResults$plot$contourLines[[1]]$x, plotResults$plot$contourLines[[1]]$y)
 		contourValue <- mean(sn:::dmst(data, dp = plotResults$object@dp))
 
 		isInside <- sn:::dmst(rawData, dp = plotResults$object@dp) > contourValue
+
+		#Not *exactly* sure why this occassionally comes out as NA. Numerical overflow for the occasional point?
+		isInside[is.na(isInside)] <- FALSE
+
 		overallClusterAssignments[isInside] <- group
+		insideNumberOfGroups[isInside] <- insideNumberOfGroups[isInside] + 1
 	}
+	#If it's in multiple groups, then mark the cluster assignment as NA.
+	overallClusterAssignments[insideNumberOfGroups > 1] <- NA
+
 	classificationsPerPosition <- list()
 	for(position in bestPositionsChromosomes)
 	{
@@ -85,7 +95,7 @@ callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClus
 			result[overallClusterAssignments == group] <- which.max(conversionTable[group,])
 		}
 		classificationsPerPosition[[position]] <- result
+		names(classificationsPerPosition[[position]]) <- rownames(rawData)
 	}
-
 	return(list(overallAssignment = overallClusterAssignments, classificationsPerPosition = classificationsPerPosition))
 }
