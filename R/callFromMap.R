@@ -1,5 +1,5 @@
 #' @export
-callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClusters = 1e-10, maxChromosomes = 2, existingImputations, tDistributionPValue = 0.6)
+callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClusters = c(1e-10, 1e-20, 1e-30, 1e-40), maxChromosomes = 2, existingImputations, tDistributionPValue = 0.6)
 {
 	rawResult <- addExtraMarkerFromRawCall(mpcrossMapped = existingImputations, newMarker = rawData)
 	chromosomes <- names(existingImputations@map)
@@ -10,6 +10,16 @@ callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClus
 	bestChromosomes <- names(chromosomeScores[chromosomeScores > thresholdChromosomes])
 	bestPositionsChromosomes <- sapply(bestChromosomes, function(x) names(which.max(rawResult@data[names(rawResult@map[[x]])])))
 
+	thresholdAlleleClusters <- sort(thresholdAlleleClusters, decreasing = FALSE)
+	for(thresholdAlleleCluster in thresholdAlleleClusters)
+	{
+		result <- callFromMapInternal(bestPositionsChromosomes = bestPositionsChromosomes, rawData = rawData, thresholdAlleleCluster = thresholdAlleleCluster, existingImputations = existingImputations, tDistributionPValue = tDistributionPValue)
+		if(!is.null(result)) return(result)
+	}
+	return(NULL)
+}
+callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlleleCluster, existingImputations, tDistributionPValue)
+{
 	dataPerPosition <- clusters <- list()
 	for(position in bestPositionsChromosomes)
 	{
@@ -29,8 +39,7 @@ callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClus
 			}
 		}
 		adjacencyMatrix <- matrix(0, nrow = 8, ncol = 8)
-		threshold <- thresholdAlleleClusters
-		adjacencyMatrix[results > threshold] <- 1
+		adjacencyMatrix[results > thresholdAlleleCluster] <- 1
 		diag(adjacencyMatrix) <- 1
 		maxCliques <- igraph::max_cliques(igraph::graph_from_adjacency_matrix(adjacencyMatrix))
 		#The max cliques should actually partition the graph, so check that
@@ -61,12 +70,36 @@ callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClus
 		groupData <- dataSubset[combinedGroups == group,]
 		groupData <- as.data.frame(groupData)
 		colnames(groupData) <- c("x", "y")
-		model <- selm(cbind(x, y) ~ 1, family = "ST", fixed.param = list(alpha = 0), data = groupData)
-		distribution <- extractSECdistr(model, compNames = c("x", "y"))
+		done <- FALSE
+		try(
+			{
+				setTimeLimit(120, 120)
+				model <- selm(cbind(x, y) ~ 1, family = "ST", data = groupData, fixed.param = list(alpha = 0))
+				distribution <- extractSECdistr(model, compNames = c("x", "y"))
 
-		pdf(NULL)
-			plotResults <- plot(distribution, col = 2, probs = tDistributionPValue, landmarks = "")
-		dev.off()
+				pdf(NULL)
+					plotResults <- plot(distribution, col = 2, probs = tDistributionPValue, landmarks = "")
+				dev.off()
+				done <- TRUE
+			}, silent = TRUE
+		)
+		if(!done)
+		{
+			try(
+				{
+					setTimeLimit(120, 120)
+					model <- selm(cbind(x, y) ~ 1, family = "ST", data = groupData)
+					distribution <- extractSECdistr(model, compNames = c("x", "y"))
+
+					pdf(NULL)
+						plotResults <- plot(distribution, col = 2, probs = tDistributionPValue, landmarks = "")
+					dev.off()
+					done <- TRUE
+				}, silent = TRUE
+			)
+		}
+		if(!done) return(NULL)
+
 		data <- cbind(plotResults$plot$contourLines[[1]]$x, plotResults$plot$contourLines[[1]]$y)
 		contourValue <- mean(sn:::dmst(data, dp = plotResults$object@dp))
 
@@ -94,8 +127,8 @@ callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClus
 		{
 			result[overallClusterAssignments == group] <- which.max(conversionTable[group,])
 		}
-		classificationsPerPosition[[position]] <- result
-		names(classificationsPerPosition[[position]]) <- rownames(rawData)
+		names(result) <- rownames(rawData)
+		classificationsPerPosition[[position]] <- list(finals = result, founders = mapping)
 	}
 	return(list(overallAssignment = overallClusterAssignments, classificationsPerPosition = classificationsPerPosition))
 }
