@@ -1,7 +1,7 @@
 #' @export
 callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClusters = c(1e-10, 1e-20, 1e-30, 1e-40), maxChromosomes = 2, existingImputations, tDistributionPValue = 0.6)
 {
-	rawResult <- addExtraMarkerFromRawCall(mpcrossMapped = existingImputations, newMarker = rawData)
+	rawResult <- mpMap2::addExtraMarkerFromRawCall(mpcrossMapped = existingImputations, newMarker = rawData)
 	chromosomes <- names(existingImputations@map)
 	chromosomeScores <- sapply(chromosomes, function(x) max(rawResult@data[names(rawResult@map[[x]])]))
 	chromosomeScores <- sort(chromosomeScores, decreasing=TRUE)

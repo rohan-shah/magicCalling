@@ -15,10 +15,10 @@ Depends:
     ggplot2,
     igraph,
     sn,
-    mpMap2,
     rjags (>= 5.0.0)
 Suggests:
-    testthat
+    testthat,
+    mpMap2
 Imports:
     rjags,
     dbscan,
