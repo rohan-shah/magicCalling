@@ -9,11 +9,14 @@ Description: Tools for calling SNP markers in multi-parent RIL populations (also
     known as MAGIC populations).
 License: GPL-3
 LazyLoad: yes
+SystemRequirements: JAGS 5.x.y
 Depends: 
     R (>= 2.10),
     ggplot2,
     igraph,
-    sn
+    sn,
+    mpMap2,
+    rjags (>= 5.0.0)
 Suggests:
     testthat
 Imports:

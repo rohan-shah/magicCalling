@@ -101,9 +101,9 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 		if(!done) return(NULL)
 
 		data <- cbind(plotResults$plot$contourLines[[1]]$x, plotResults$plot$contourLines[[1]]$y)
-		contourValue <- mean(sn:::dmst(data, dp = plotResults$object@dp))
+		contourValue <- mean(sn::dmst(data, dp = plotResults$object@dp))
 
-		isInside <- sn:::dmst(rawData, dp = plotResults$object@dp) > contourValue
+		isInside <- sn::dmst(rawData, dp = plotResults$object@dp) > contourValue
 
 		#Not *exactly* sure why this occassionally comes out as NA. Numerical overflow for the occasional point?
 		isInside[is.na(isInside)] <- FALSE

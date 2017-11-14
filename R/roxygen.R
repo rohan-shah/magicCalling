@@ -1,8 +1,15 @@
 #' @import dbscan
 #' @import ggplot2
+#' @import mpMap2
+#' @import stats
+#' @import grDevices
+#' @importFrom grDevices pdf dev.off
+#' @importFrom stats lm contrasts<-
+#' @importFrom mpMap2 addExtraMarkerFromRawCall
 #' @importFrom dbscan dbscan
 #' @importFrom car ellipse
 #' @importFrom graphics points locator plot
+#' @importMethodsFrom graphics plot
 #' @importFrom grDevices palette
 #' @importFrom stats na.omit 
 #' @importFrom rjags jags.model jags.samples
