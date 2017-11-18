@@ -31,8 +31,8 @@ before_install:
  - mkdir -p ~/.R
  - echo "VkVSPS01DQpDQz1nY2MkKFZFUikgLXN0ZD1jMTEgDQpDWFg9ZysrJChWRVIpDQpTSExJQl9DWFhMRD1nKyskKFZFUikNCkZDPWdmb3J0cmFuJChWRVIpDQpGNzc9Z2ZvcnRyYW4kKFZFUik=" | base64 -d > ~/.R/Makevars
  - cat ~/.R/Makevars
- - hg clone http://hg.code.sf.net/u/rohan-shah/mcmc-jags u-rohan-shah-mcmc-jags
- - cd u-rohan-shah-mcmc-jags
+ - hg clone http://hg.code.sf.net/p/mcmc-jags/code-0 mcmc-jags-code-0
+ - cd mcmc-jags-code-0
  - sed -e 's/PKG_CHECK_MODULES(\[CPPUNIT/#PKG_CHECK_MODULES(\[CPPUNIT/g' -i configure.ac
  - libtoolize && aclocal && autoconf && (automake --add-missing || true) && autoreconf
  - sed -e 's/PKG_CHECK_MODULES(\[CPPUNIT/#PKG_CHECK_MODULES(\[CPPUNIT/g' -i configure.ac

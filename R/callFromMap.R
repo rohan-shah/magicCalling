@@ -66,7 +66,7 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 				contrastRow[i] <- 1
 				contrastRow[j] <- -1
 				contrasts(dataPerPosition[[position]]) <- cbind(condInterest = contrastRow)
-				model <- lm(dataSubset ~ dataPerPosition[[position]])
+				model <- lm(rawData ~ dataPerPosition[[position]])
 				currentSummary <- summary(model)
 				results[j, i] <- results[i, j] <- min(currentSummary[[1]]$coefficients[2, 4], currentSummary[[2]]$coefficients[2, 4])
 			}
@@ -100,7 +100,7 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 	insideNumberOfGroups <- vector(mode = "integer", length = nrow(rawData))
 	for(group in 1:nCombinedGroups)
 	{
-		groupData <- dataSubset[combinedGroups == group,]
+		groupData <- rawData[combinedGroups == group,]
 		groupData <- as.data.frame(groupData)
 		colnames(groupData) <- c("x", "y")
 		done <- FALSE
