@@ -8,4 +8,3 @@
 Alex Whan, Matthew Morell, Rohan Shah, Colin Cavanagh
 This is a sample of 200 genetic markers from an 8-way MAGIC population of 4229 lines.
 }
-

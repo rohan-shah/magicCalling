@@ -12,4 +12,3 @@ createData(rawDataPartsDir)
 \description{
 Function used to generate the example data.
 }
-

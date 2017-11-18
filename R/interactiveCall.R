@@ -44,7 +44,7 @@
 #' exampleDbscanParameters <- list("1" = list(eps = 0.04, minPts = 65), "2" = list(eps = 0.03, minPts = 105))
 #' \dontrun{
 #' #In this call, commands "1" and "2" run DBSCAN. Command "c" calls the model-based clustering algorithm, generating eight possible calls, and displays the first. The next seven commands "c" show the next model-based call. The eighth command "c" generates another eight possible calls and shows the first, etc. 
-#' interactiveResult <- interactiveCall(originalResult, startingPointFunction = startingPointFunction, n.iter = 200, dbscanParameters = exampleDbscanParameters, clusterModelParameters = magicCalling:::exampleModelParameters)
+#' interactiveResult <- interactiveCall(originalResult, startingPointFunction = startingPointFunction, n.iter = 200, dbscanParameters = exampleDbscanParameters, clusterModelParameters = magicCalling:::exampleModelParameters, runHeuristicsParameters = list(minHomozygoteSize = 200))
 #' }
 interactiveCall <- function(originalResult, startingPointFunction, n.iter, dbscanParameters, clusterModelParameters, runHeuristicsParameters, ...)
 {

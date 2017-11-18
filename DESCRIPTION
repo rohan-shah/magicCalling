@@ -33,4 +33,4 @@ Collate:
     'interactiveCall.R'
     'plotCalls.R'
     'roxygen.R'
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

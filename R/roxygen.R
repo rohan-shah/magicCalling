@@ -7,7 +7,6 @@
 #' @importFrom dbscan dbscan
 #' @importFrom car ellipse
 #' @importFrom graphics points locator plot
-#' @importMethodsFrom graphics plot
 #' @importFrom grDevices palette
 #' @importFrom stats na.omit 
 #' @importFrom rjags jags.model jags.samples

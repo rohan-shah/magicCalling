@@ -66,4 +66,3 @@ exampleDbscanParameters <- list("1" = list(eps = 0.04, minPts = 65), "2" = list(
 interactiveResult <- interactiveCall(originalResult, startingPointFunction = startingPointFunction, n.iter = 200, dbscanParameters = exampleDbscanParameters, clusterModelParameters = magicCalling:::exampleModelParameters)
 }
 }
-
