@@ -36,7 +36,7 @@ before_install:
  - libtoolize && aclocal && autoconf && (automake --add-missing || true) && autoreconf
  - ./configure && make && sudo make install
  - cd ..
- - rm -rf u-rohan-shah-mcmc-jags
+ - rm -rf mcmc-jags-code-0
  - R -e "install.packages(c(\"coda\", \"testthat\"), repos=\"http://cran.r-project.org\")"
  - hg clone http://hg.code.sf.net/p/mcmc-jags/rjags mcmc-jags-rjags
  - export LD_RUN_PATH=/usr/local/lib/:$LD_RUN_PATH
