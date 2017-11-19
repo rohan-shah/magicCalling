@@ -70,7 +70,6 @@ plot.hierarchicalBayesianModel <- function(x, allFounderNames, chainIndex, ...)
   }
 }
 #' @rdname plot.model
-#' @param ... Extra arguments to these functions are ignored.
 #' @method plot magicHeuristicHBC
 #' @S3method plot magicHeuristicHBC
 #' @export 
@@ -118,6 +117,8 @@ plot.magicHeuristicHBC <- function(x, allFounderNames, chainIndex, ...)
 #' @description Plot the results of manually calling a marker
 #' @param x An object of class markerResult. 
 #' @param allFounderNames Optional list of the names of the founder lines replicates within the genetic data. 
+#' @param ... Extra arguments to these functions are ignored.
+#' @S3method plot markerResult
 #' @details
 #' This function plots the results of calling a marker manually using interactiveCall. In these cases a marker might have been called using 
 #' the hierarchical Bayesia approach, or using DBSCAN. 
