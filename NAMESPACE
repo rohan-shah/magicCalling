@@ -2,6 +2,7 @@
 
 S3method(plot,hierarchicalBayesianModel)
 S3method(plot,magicHeuristicHBC)
+S3method(plot,markerResult)
 export(callFromMap)
 export(fitClusterModel)
 export(interactiveCall)

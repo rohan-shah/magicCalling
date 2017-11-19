@@ -10,6 +10,8 @@ plot.markerResult(x, allFounderNames, ...)
 \item{x}{An object of class markerResult.}
 
 \item{allFounderNames}{Optional list of the names of the founder lines replicates within the genetic data.}
+
+\item{...}{Extra arguments to these functions are ignored.}
 }
 \description{
 Plot the results of manually calling a marker
