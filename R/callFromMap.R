@@ -54,6 +54,7 @@ callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClus
 callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlleleCluster, existingImputations, tDistributionPValue)
 {
 	dataPerPosition <- clusters <- list()
+	pValuesMatrices <- list()
 	for(position in bestPositionsChromosomes)
 	{
 		dataPerPosition[[position]] <- factor(existingImputations@geneticData[[1]]@imputed@data[,position])
@@ -71,6 +72,7 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 				results[j, i] <- results[i, j] <- min(currentSummary[[1]]$coefficients[2, 4], currentSummary[[2]]$coefficients[2, 4])
 			}
 		}
+		pValuesMatrices[[position]] <- results
 		adjacencyMatrix <- matrix(0, nrow = 8, ncol = 8)
 		adjacencyMatrix[results > thresholdAlleleCluster] <- 1
 		diag(adjacencyMatrix) <- 1
@@ -163,5 +165,5 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 		names(result) <- rownames(rawData)
 		classificationsPerPosition[[position]] <- list(finals = result, founders = mapping)
 	}
-	return(list(overallAssignment = overallClusterAssignments, classificationsPerPosition = classificationsPerPosition))
+	return(list(overallAssignment = overallClusterAssignments, classificationsPerPosition = classificationsPerPosition, pValuesMatrices = pValuesMatrices, preliminaryGroups = combinedGroups))
 }
