@@ -7,7 +7,7 @@ Author: Rohan Shah
 Maintainer: Rohan Shah <cran@bookshah.com>
 Description: Tools for calling SNP markers in multi-parent RIL populations (also
     known as MAGIC populations).
-License: GPL-3
+License: GPL-3 + file LICENSE
 LazyLoad: yes
 SystemRequirements: JAGS 5.x.y
 Depends: 
