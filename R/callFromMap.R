@@ -66,10 +66,25 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 				contrastRow <- rep(0, 8)
 				contrastRow[i] <- 1
 				contrastRow[j] <- -1
-				contrasts(dataPerPosition[[position]]) <- cbind(condInterest = contrastRow)
-				model <- lm(rawData ~ dataPerPosition[[position]])
-				currentSummary <- summary(model)
-				results[j, i] <- results[i, j] <- min(currentSummary[[1]]$coefficients[2, 4], currentSummary[[2]]$coefficients[2, 4])
+				currentModelData <- dataPerPosition[[position]]
+				contrasts(currentModelData) <- cbind(condInterest = contrastRow)
+				model <- lm(rawData ~ currentModelData)
+				testResult <- car::linearHypothesis(model, "currentModelDatacondInterest")
+				
+				#Taken from print.linearHypothesis.mlm
+				SSPE.qr <- qr(testResult$SSPE)
+				eigs <- Re(eigen(qr.coef(SSPE.qr, testResult$SSPH), symmetric = FALSE)$values)
+				pillai <- car:::Pillai(eigs, testResult$df, testResult$df.residual)
+				ok <- (pillai[2] >= 0) & (pillai[3] > 0) & (pillai[4] > 0)
+				ok <- !is.na(ok) & ok
+				if(!ok)
+				{
+					warning("Problem computing Pillai-Bartlett test statistic")
+					return(NULL)
+				}
+				pvalue <- pf(pillai[2], pillai[3], pillai[4], lower.tail = FALSE)
+
+				results[j, i] <- results[i, j] <- pvalue
 			}
 		}
 		pValuesMatrices[[position]] <- results
