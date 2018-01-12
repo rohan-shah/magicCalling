@@ -115,6 +115,7 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 	overallClusterAssignments[] <- NA
 	clusterAssignmentsPerPosition <- list()
 	insideNumberOfGroups <- vector(mode = "integer", length = nrow(rawData))
+	clusterBoundaries <- list()
 	for(group in 1:nCombinedGroups)
 	{
 		groupData <- rawData[combinedGroups == group,]
@@ -123,7 +124,7 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 		done <- FALSE
 		try(
 			{
-				setTimeLimit(120, 120)
+				setTimeLimit(120, 120, transient = TRUE)
 				model <- selm(cbind(x, y) ~ 1, family = "ST", data = groupData, fixed.param = list(alpha = 0))
 				distribution <- extractSECdistr(model, compNames = c("x", "y"))
 
@@ -137,7 +138,7 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 		{
 			try(
 				{
-					setTimeLimit(120, 120)
+					setTimeLimit(120, 120, transient = TRUE)
 					model <- selm(cbind(x, y) ~ 1, family = "ST", data = groupData)
 					distribution <- extractSECdistr(model, compNames = c("x", "y"))
 
@@ -148,8 +149,13 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 				}, silent = TRUE
 			)
 		}
-		if(!done) return(NULL)
+		if(!done) 
+		{
+			setTimeLimit()
+			return(NULL)
+		}
 
+		clusterBoundaries[[group]] <- plotResults$plot$contourLines[[1]]
 		data <- cbind(plotResults$plot$contourLines[[1]]$x, plotResults$plot$contourLines[[1]]$y)
 		contourValue <- mean(sn::dmst(data, dp = plotResults$object@dp))
 
@@ -180,5 +186,6 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 		names(result) <- rownames(rawData)
 		classificationsPerPosition[[position]] <- list(finals = result, founders = mapping)
 	}
-	return(list(overallAssignment = overallClusterAssignments, classificationsPerPosition = classificationsPerPosition, pValuesMatrices = pValuesMatrices, preliminaryGroups = combinedGroups))
+	setTimeLimit()
+	return(list(overallAssignment = overallClusterAssignments, classificationsPerPosition = classificationsPerPosition, pValuesMatrices = pValuesMatrices, preliminaryGroups = combinedGroups, clusterBoundaries = clusterBoundaries))
 }
