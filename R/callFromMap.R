@@ -39,6 +39,7 @@ callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClus
 	chromosomeScores <- sapply(chromosomes, function(x) max(rawResult@data[names(rawResult@map[[x]])]))
 	chromosomeScores <- sort(chromosomeScores, decreasing=TRUE)
 	if(sum(chromosomeScores > thresholdChromosomes) > maxChromosomes) return(NULL)
+	if(sum(chromosomeScores > thresholdChromosomes) == 0) return(NULL)
 
 	bestChromosomes <- names(chromosomeScores[chromosomeScores > thresholdChromosomes])
 	bestPositionsChromosomes <- sapply(bestChromosomes, function(x) names(which.max(rawResult@data[names(rawResult@map[[x]])])))
@@ -53,17 +54,18 @@ callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClus
 }
 callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlleleCluster, existingImputations, tDistributionPValue)
 {
+	nFounders <- nFounders(existingImputations)
 	dataPerPosition <- clusters <- list()
 	pValuesMatrices <- list()
 	for(position in bestPositionsChromosomes)
 	{
 		dataPerPosition[[position]] <- factor(existingImputations@geneticData[[1]]@imputed@data[,position])
-		results <- matrix(0, nrow = 8, ncol = 8)
-		for(i in 1:7)
+		results <- matrix(0, nrow = nFounders, ncol = nFounders)
+		for(i in 1:(nFounders-1))
 		{
-			for(j in (i+1):8)
+			for(j in (i+1):nFounders)
 			{
-				contrastRow <- rep(0, 8)
+				contrastRow <- rep(0, nFounders)
 				contrastRow[i] <- 1
 				contrastRow[j] <- -1
 				currentModelData <- dataPerPosition[[position]]
@@ -88,20 +90,20 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 			}
 		}
 		pValuesMatrices[[position]] <- results
-		adjacencyMatrix <- matrix(0, nrow = 8, ncol = 8)
+		adjacencyMatrix <- matrix(0, nrow = nFounders, ncol = nFounders)
 		adjacencyMatrix[results > thresholdAlleleCluster] <- 1
 		diag(adjacencyMatrix) <- 1
 		maxCliques <- igraph::max_cliques(igraph::graph_from_adjacency_matrix(adjacencyMatrix))
 		#The max cliques should actually partition the graph, so check that
 		maxCliqueVector <- do.call(c, maxCliques)
-		if(length(maxCliqueVector) != 8 || length(unique(maxCliqueVector)) != 8) return(NULL)
+		if(length(maxCliqueVector) != nFounders || length(unique(maxCliqueVector)) != nFounders) return(NULL)
 		#If marker is monomorphic, return NULL
 		if(length(maxCliques) == 1) return(NULL)
 		clusters[[position]] <- maxCliques
 	}
 	classifyPosition <- function(position)
 	{
-		mapping <- vector(mode = "integer", length = 8)
+		mapping <- vector(mode = "integer", length = nFounders)
 		for(clusterCounter in 1:length(clusters[[position]])) mapping[clusters[[position]][[clusterCounter]]] <- clusterCounter
 		return(mapping[as.integer(dataPerPosition[[position]])])
 	}
@@ -173,7 +175,7 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 	classificationsPerPosition <- list()
 	for(position in bestPositionsChromosomes)
 	{
-		mapping <- vector(mode = "integer", length = 8)
+		mapping <- vector(mode = "integer", length = nFounders)
 		for(clusterCounter in 1:length(clusters[[position]])) mapping[clusters[[position]][[clusterCounter]]] <- clusterCounter
 		currentPositionClassificationTable <- mapping[dataPerPosition[[position]]]
 		conversionTable <- table(overallClusterAssignments, currentPositionClassificationTable)
