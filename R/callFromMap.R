@@ -32,25 +32,40 @@
 #' 	\item{4.}{For each fitted distribution, determine a confidence region using p-value \code{tDistributionPValue}. }
 #' 	\item{5.}{Use these confidence regions to construct marker calls at each associated location.}
 #' }
-callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClusters = c(1e-10, 1e-20, 1e-30, 1e-40), maxChromosomes = 2, existingImputations, tDistributionPValue = 0.6)
+callFromMap <- function(rawData, thresholdChromosomes = 100, thresholdAlleleClusters = c(1e-10, 1e-20, 1e-30, 1e-40), maxChromosomes = 2, existingImputations, tDistributionPValue = 0.6, useOnlyExtraImputationPoints = TRUE)
 {
-	rawResult <- mpMap2::addExtraMarkerFromRawCall(mpcrossMapped = existingImputations, newMarker = rawData)
+	rawResult <- mpMap2::addExtraMarkerFromRawCall(mpcrossMapped = existingImputations, newMarker = rawData, useOnlyExtraImputationPoints = useOnlyExtraImputationPoints)
 	chromosomes <- names(existingImputations@map)
 	chromosomeScores <- sapply(chromosomes, function(x) max(rawResult@data[names(rawResult@map[[x]])]))
 	chromosomeScores <- sort(chromosomeScores, decreasing=TRUE)
-	if(sum(chromosomeScores > thresholdChromosomes) > maxChromosomes) return(NULL)
-	if(sum(chromosomeScores > thresholdChromosomes) == 0) return(NULL)
+	if(sum(chromosomeScores > thresholdChromosomes) > maxChromosomes) 
+	{
+		result <- list(called = FALSE)
+		attr(result, "failures") <- "Detected on too many chromosomes"
+		return(result)
+	}
+	if(sum(chromosomeScores > thresholdChromosomes) == 0)
+	{
+		result <- list(called = FALSE)
+		attr(result, "failures") <- "Detected on zero chromosomes"
+		return(result)
+	}
 
 	bestChromosomes <- names(chromosomeScores[chromosomeScores > thresholdChromosomes])
 	bestPositionsChromosomes <- sapply(bestChromosomes, function(x) names(which.max(rawResult@data[names(rawResult@map[[x]])])))
 
 	thresholdAlleleClusters <- sort(thresholdAlleleClusters, decreasing = FALSE)
-	for(thresholdAlleleCluster in thresholdAlleleClusters)
+	internalResults <- vector(mode = "character", length = length(thresholdAlleleClusters))
+	for(index in 1:length(thresholdAlleleClusters))
 	{
+		thresholdAlleleCluster <- thresholdAlleleClusters[index]
 		result <- callFromMapInternal(bestPositionsChromosomes = bestPositionsChromosomes, rawData = rawData, thresholdAlleleCluster = thresholdAlleleCluster, existingImputations = existingImputations, tDistributionPValue = tDistributionPValue)
-		if(!is.null(result)) return(result)
+		if(!is.null(result) && !is.character(result)) return(result)
+		if(is.character(result)) internalResults[index] <- result
 	}
-	return(NULL)
+	result <- list(called = FALSE)
+	attr(result, "failures") <- internalResults
+	return(result)
 }
 callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlleleCluster, existingImputations, tDistributionPValue)
 {
@@ -81,8 +96,7 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 				ok <- !is.na(ok) & ok
 				if(!ok)
 				{
-					warning("Problem computing Pillai-Bartlett test statistic")
-					return(NULL)
+					return("Problem computing Pillai-Bartlett test statistic")
 				}
 				pvalue <- pf(pillai[2], pillai[3], pillai[4], lower.tail = FALSE)
 
@@ -96,9 +110,9 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 		maxCliques <- igraph::max_cliques(igraph::graph_from_adjacency_matrix(adjacencyMatrix))
 		#The max cliques should actually partition the graph, so check that
 		maxCliqueVector <- do.call(c, maxCliques)
-		if(length(maxCliqueVector) != nFounders || length(unique(maxCliqueVector)) != nFounders) return(NULL)
+		if(length(maxCliqueVector) != nFounders || length(unique(maxCliqueVector)) != nFounders) return("Overlapping cliques")
 		#If marker is monomorphic, return NULL
-		if(length(maxCliques) == 1) return(NULL)
+		if(length(maxCliques) == 1) return("monoallelic")
 		clusters[[position]] <- maxCliques
 	}
 	classifyPosition <- function(position)
@@ -154,7 +168,7 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 		if(!done) 
 		{
 			setTimeLimit()
-			return(NULL)
+			return("Error fitting t distribution")
 		}
 
 		clusterBoundaries[[group]] <- plotResults$plot$contourLines[[1]]
@@ -171,7 +185,7 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 	}
 	#If it's in multiple groups, then mark the cluster assignment as NA.
 	overallClusterAssignments[insideNumberOfGroups > 1] <- NA
-
+	overallClusterAssignments <- factor(overallClusterAssignments, levels = 1:nCombinedGroups)
 	classificationsPerPosition <- list()
 	for(position in bestPositionsChromosomes)
 	{
@@ -179,6 +193,8 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 		for(clusterCounter in 1:length(clusters[[position]])) mapping[clusters[[position]][[clusterCounter]]] <- clusterCounter
 		currentPositionClassificationTable <- mapping[dataPerPosition[[position]]]
 		conversionTable <- table(overallClusterAssignments, currentPositionClassificationTable)
+		#Switch how we assign clusters to marker alleles. Potentially the commented out version is better?
+		for(k in 1:ncol(conversionTable)) conversionTable[,k] <- conversionTable[,k] / sum(conversionTable[,k])
 		
 		result <- vector(mode = "integer", length = nrow(rawData))
 		for(group in 1:nCombinedGroups)
@@ -189,5 +205,5 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 		classificationsPerPosition[[position]] <- list(finals = result, founders = mapping)
 	}
 	setTimeLimit()
-	return(list(overallAssignment = overallClusterAssignments, classificationsPerPosition = classificationsPerPosition, pValuesMatrices = pValuesMatrices, preliminaryGroups = combinedGroups, clusterBoundaries = clusterBoundaries))
+	return(list(overallAssignment = as.integer(overallClusterAssignments), classificationsPerPosition = classificationsPerPosition, pValuesMatrices = pValuesMatrices, preliminaryGroups = combinedGroups, clusterBoundaries = clusterBoundaries, called = TRUE))
 }
