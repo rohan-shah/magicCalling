@@ -143,9 +143,9 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 				setTimeLimit(120, 120, transient = TRUE)
 				model <- selm(cbind(x, y) ~ 1, family = "ST", data = groupData, fixed.param = list(alpha = 0))
 				distribution <- extractSECdistr(model, compNames = c("x", "y"))
-
+				plotRange <- cbind(range(groupData[,1]), range(groupData[, 2]))
 				pdf(NULL)
-					plotResults <- plot(distribution, col = 2, probs = tDistributionPValue, landmarks = "")
+					plotResults <- plot(distribution, col = 2, probs = tDistributionPValue, landmarks = "", range = plotRange)
 				dev.off()
 				done <- TRUE
 			}, silent = TRUE
@@ -157,9 +157,9 @@ callFromMapInternal <- function(bestPositionsChromosomes, rawData, thresholdAlle
 					setTimeLimit(120, 120, transient = TRUE)
 					model <- selm(cbind(x, y) ~ 1, family = "ST", data = groupData)
 					distribution <- extractSECdistr(model, compNames = c("x", "y"))
-
+					plotRange <- cbind(range(groupData[,1]), range(groupData[, 2]))
 					pdf(NULL)
-						plotResults <- plot(distribution, col = 2, probs = tDistributionPValue, landmarks = "")
+						plotResults <- plot(distribution, col = 2, probs = tDistributionPValue, landmarks = "", range = plotRange)
 					dev.off()
 					done <- TRUE
 				}, silent = TRUE
