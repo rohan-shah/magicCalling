@@ -20,6 +20,8 @@ RUN rm -rf /jags \
  && rm -rf /rjags
 
 ENV BASHRC_FILE=/root/.bashrc
+ENV LD_LIBRARY_PATH=/usr/local/lib/:/usr/local/lib/JAGS/modules-5/
+
 RUN echo "" >> $BASHRC_FILE \
  && echo "export LD_LIBRARY_PATH=/usr/local/lib/:/usr/local/lib/JAGS/modules-5/" >> $BASHRC_FILE \
  && echo "" >> $BASHRC_FILE
