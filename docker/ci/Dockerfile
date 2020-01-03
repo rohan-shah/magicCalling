@@ -1,12 +1,13 @@
 FROM rohanshahcsiro/magiccalling-jags:latest
 
-RUN export LD_LIBRARY_PATH=/usr/local/lib/:/usr/local/lib/JAGS/modules-5/ \
- && git clone https://github.com/rohan-shah/magicCalling.git \
- && cd magicCalling \
- && R CMD INSTALL . \
- && rm -rf /magicCalling
+RUN R -e "install.packages(c('testthat', 'qtl', 'fastcluster', 'pryr', 'nnls', 'jsonlite'))"
 
-RUN R -e "install.packages('testthat')"
+RUN R -e "if (!requireNamespace('BiocManager', quietly = TRUE)){install.packages('BiocManager')}; BiocManager::install('Heatplus')"
+
+RUN git clone https://github.com/rohan-shah/mpMap2.git \
+ && cd mpMap2 \
+ && R CMD INSTALL . \
+ && rm -rf /mpMap2
 
 # Install Tini
 RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.10.0/tini \

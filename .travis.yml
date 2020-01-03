@@ -7,10 +7,10 @@ env:
    - DOCKER_OPTS="--rm -ti -v $(pwd):/mnt -w /mnt"
 
 before_install:
- - docker pull rohanshahcsiro/magiccalling-jags
+ - docker pull rohanshahcsiro/magiccalling-ci
 
 install: 
- - docker run ${DOCKER_OPTS} rohanshahcsiro/magiccalling-jags R CMD build .
+ - docker run ${DOCKER_OPTS} rohanshahcsiro/magiccalling-ci R CMD build .
 
 notifications:
   email:
@@ -23,4 +23,4 @@ after_failure:
 - find *Rcheck -name '00check.log' -print -exec tail -n 100 '{}' \;
 
 script:
- - docker run ${DOCKER_OPTS} rohanshahcsiro/magiccalling-jags R CMD check magicCalling_*.tar.gz
+ - docker run ${DOCKER_OPTS} rohanshahcsiro/magiccalling-ci R CMD check magicCalling_*.tar.gz
